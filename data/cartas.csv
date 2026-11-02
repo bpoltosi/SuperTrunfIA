@@ -1,35 +1,35 @@
-id,empresa,modelo,caracteristicas,raciocinio,programacao,matematica,conhecimento,tipo_carta
-1,Especial,Alan Turing,"Carta especial simbólica e histórica: pioneirismo da computação, lógica matemática e fundamentos teóricos da inteligência artificial.",90,70,99,80,super_trunfo
-2,OpenAI,GPT-6 Astra,"Modelo de fronteira para raciocínio complexo, ciência, programação e trabalho profissional.",92,90,91,90,modelo
-3,Anthropic,Claude Opus 5.5,"Modelo de ponta, especialmente forte em programação agentiva e trabalho complexo.",91,92,89,89,modelo
-4,Google DeepMind,Gemini 4 Argon,"Modelo de fronteira multimodal, forte em raciocínio, conhecimento e tarefas complexas.",91,89,90,92,modelo
-5,DeepSeek,DeepSeek V4-Pro,"Modelo de alto desempenho da família V4, voltado a tarefas complexas e agentes.",89,90,91,88,modelo
-6,OpenAI,GPT-6.1 Sol,"Desempenho próximo ao topo, com equilíbrio entre raciocínio, programação e eficiência.",87,86,86,87,modelo
-7,Anthropic,Claude Sonnet 5.5,"Alto desempenho em programação e tarefas profissionais, com perfil equilibrado.",86,88,83,85,modelo
-8,Google DeepMind,Gemini 3.1 Pro,"Modelo de alto desempenho geral, com boa capacidade de raciocínio e matemática.",86,84,87,87,modelo
-9,xAI,Grok 4.7,"Modelo avançado para programação, conhecimento e tarefas profissionais de longa duração.",85,86,80,83,modelo
-10,DeepSeek,DeepSeek R1,"Modelo de raciocínio com destaque histórico em matemática e resolução de problemas.",86,82,89,80,modelo
-11,Mistral AI,Mistral Large 4,"Modelo multimodal aberto de uso geral, voltado a raciocínio, programação e agentes.",84,85,83,83,modelo
-12,OpenAI,GPT-6.1 Terra,"Forte em raciocínio visual, uso de computador e tarefas técnicas; destaque relativo em matemática.",79,77,80,78,modelo
-13,Anthropic,Claude Fable 5.1,"Forte em tarefas agentivas, raciocínio e matemática avançada.",80,79,81,76,modelo
-14,Anthropic,Claude Mythos 5.1,"Modelo avançado de raciocínio e capacidades complexas.",79,78,80,77,modelo
-15,Google DeepMind,Gemini 3.8 Flash,"Modelo rápido, com capacidades avançadas em engenharia de software e fluxos agentivos.",79,80,76,78,modelo
-16,Google DeepMind,Gemini 3.7 Flash,"Geração Flash anterior, equilibrando velocidade e capacidade geral.",76,75,73,77,modelo
-17,Meta,Muse Spark,"Modelo multimodal de raciocínio, com uso de ferramentas e orquestração de agentes.",78,70,75,79,modelo
-18,Meta,Llama 4 Maverick,"Modelo aberto multimodal de uso geral, com boa capacidade geral.",75,73,70,75,modelo
-19,xAI,Grok 4.6,"Geração de alto desempenho, com melhorias em agentes e tarefas visuais.",80,79,74,77,modelo
-20,Mistral AI,Mistral Small 4,"Modelo eficiente que combina instruções, raciocínio e programação.",75,76,73,74,modelo
-21,OpenAI,GPT-6 Luna,"Modelo econômico e rápido para tarefas focadas e de alto volume.",68,66,65,69,modelo
-22,Meta,Llama 4 Scout,"Modelo aberto com contexto extenso e foco em eficiência.",65,62,60,65,modelo
-23,Meta,Llama 3.3 70B Instruct,"Modelo aberto de geração anterior, competente em instruções e tarefas gerais.",66,65,62,68,modelo
-24,xAI,Grok 4.5,"Modelo avançado de uso geral, programação e trabalho agentivo.",68,67,62,66,modelo
-25,xAI,Grok 3,"Geração anterior, com capacidade geral e raciocínio competitivo para sua época.",64,63,64,65,modelo
-26,Mistral AI,Ministral 3 14B,"Modelo compacto multimodal, com foco em eficiência e capacidades gerais.",62,62,60,64,modelo
-27,Mistral AI,Mistral 7B,"Modelo aberto histórico de 7,3 bilhões de parâmetros; teve desempenho relevante para seu tamanho, inclusive em código e raciocínio.",55,57,52,58,modelo
-28,DeepSeek,DeepSeek V4.1 Flash,"Modelo eficiente com raciocínio, programação, compreensão visual e forte desempenho em avaliações técnicas.",69,69,68,65,modelo
-29,DeepSeek,DeepSeek V3.2,"Modelo geral com capacidades de programação, raciocínio e uso de ferramentas.",67,68,67,65,modelo
-30,Cohere,Command A+,"Modelo empresarial avançado, com raciocínio, agentes, visão e tradução.",66,64,58,68,modelo
-31,Cohere,Command A,"Modelo empresarial de uso geral, forte em ferramentas, RAG e tarefas multilíngues.",63,61,57,66,modelo
-32,NVIDIA,Nemotron 3 Ultra,"Modelo de grande escala, voltado a raciocínio avançado e aplicações complexas com agentes.",68,69,66,64,modelo
-33,NVIDIA,Nemotron 3 Super,"Modelo de raciocínio de alta precisão para aplicações multiagente.",65,66,63,62,modelo
-34,NVIDIA,Nemotron 2 Nano,"Modelo compacto de geração anterior, priorizando eficiência e execução de tarefas direcionadas.",55,57,52,60,modelo
+id,empresa,modelo,caracteristicas,classe,raciocinio,programacao,matematica,conhecimento,tipo_carta
+1,Especial,Alan Turing,"Carta especial simbólica e histórica: pioneirismo da computação, lógica matemática e fundamentos teóricos da inteligência artificial.",A,90,70,99,80,super_trunfo
+2,OpenAI,GPT-6 Astra,"Modelo de fronteira para raciocínio complexo, ciência, programação e trabalho profissional.",A,92,90,91,90,modelo
+3,Anthropic,Claude Opus 5.5,"Modelo de ponta, especialmente forte em programação agentiva e trabalho complexo.",A,91,92,89,89,modelo
+4,Google DeepMind,Gemini 4 Argon,"Modelo de fronteira multimodal, forte em raciocínio, conhecimento e tarefas complexas.",A,91,89,90,92,modelo
+5,DeepSeek,DeepSeek V4-Pro,"Modelo de alto desempenho da família V4, voltado a tarefas complexas e agentes.",A,89,90,91,88,modelo
+6,OpenAI,GPT-6.1 Sol,"Desempenho próximo ao topo, com equilíbrio entre raciocínio, programação e eficiência.",B,87,86,86,87,modelo
+7,Anthropic,Claude Sonnet 5.5,"Alto desempenho em programação e tarefas profissionais, com perfil equilibrado.",B,86,88,83,85,modelo
+8,Google DeepMind,Gemini 3.1 Pro,"Modelo de alto desempenho geral, com boa capacidade de raciocínio e matemática.",B,86,84,87,87,modelo
+9,xAI,Grok 4.7,"Modelo avançado para programação, conhecimento e tarefas profissionais de longa duração.",B,85,86,80,83,modelo
+10,DeepSeek,DeepSeek R1,"Modelo de raciocínio com destaque histórico em matemática e resolução de problemas.",B,86,82,89,80,modelo
+11,Mistral AI,Mistral Large 4,"Modelo multimodal aberto de uso geral, voltado a raciocínio, programação e agentes.",B,84,85,83,83,modelo
+12,OpenAI,GPT-6.1 Terra,"Forte em raciocínio visual, uso de computador e tarefas técnicas; destaque relativo em matemática.",C,79,77,80,78,modelo
+13,Anthropic,Claude Fable 5.1,"Forte em tarefas agentivas, raciocínio e matemática avançada.",C,80,79,81,76,modelo
+14,Anthropic,Claude Mythos 5.1,"Modelo avançado de raciocínio e capacidades complexas.",C,79,78,80,77,modelo
+15,Google DeepMind,Gemini 3.8 Flash,"Modelo rápido, com capacidades avançadas em engenharia de software e fluxos agentivos.",C,79,80,76,78,modelo
+16,Google DeepMind,Gemini 3.7 Flash,"Geração Flash anterior, equilibrando velocidade e capacidade geral.",C,76,75,73,77,modelo
+17,Meta,Muse Spark,"Modelo multimodal de raciocínio, com uso de ferramentas e orquestração de agentes.",C,78,70,75,79,modelo
+18,Meta,Llama 4 Maverick,"Modelo aberto multimodal de uso geral, com boa capacidade geral.",C,75,73,70,75,modelo
+19,xAI,Grok 4.6,"Geração de alto desempenho, com melhorias em agentes e tarefas visuais.",C,80,79,74,77,modelo
+20,Mistral AI,Mistral Small 4,"Modelo eficiente que combina instruções, raciocínio e programação.",C,75,76,73,74,modelo
+21,OpenAI,GPT-6 Luna,"Modelo econômico e rápido para tarefas focadas e de alto volume.",D,68,66,65,69,modelo
+22,Meta,Llama 4 Scout,"Modelo aberto com contexto extenso e foco em eficiência.",D,65,62,60,65,modelo
+23,Meta,Llama 3.3 70B Instruct,"Modelo aberto de geração anterior, competente em instruções e tarefas gerais.",D,66,65,62,68,modelo
+24,xAI,Grok 4.5,"Modelo avançado de uso geral, programação e trabalho agentivo.",D,68,67,62,66,modelo
+25,xAI,Grok 3,"Geração anterior, com capacidade geral e raciocínio competitivo para sua época.",D,64,63,64,65,modelo
+26,Mistral AI,Ministral 3 14B,"Modelo compacto multimodal, com foco em eficiência e capacidades gerais.",D,62,62,60,64,modelo
+27,Mistral AI,Mistral 7B,"Modelo aberto histórico de 7,3 bilhões de parâmetros; teve desempenho relevante para seu tamanho, inclusive em código e raciocínio.",D,55,57,52,58,modelo
+28,DeepSeek,DeepSeek V4.1 Flash,"Modelo eficiente com raciocínio, programação, compreensão visual e forte desempenho em avaliações técnicas.",D,69,69,68,65,modelo
+29,DeepSeek,DeepSeek V3.2,"Modelo geral com capacidades de programação, raciocínio e uso de ferramentas.",D,67,68,67,65,modelo
+30,Cohere,Command A+,"Modelo empresarial avançado, com raciocínio, agentes, visão e tradução.",D,66,64,58,68,modelo
+31,Cohere,Command A,"Modelo empresarial de uso geral, forte em ferramentas, RAG e tarefas multilíngues.",D,63,61,57,66,modelo
+32,NVIDIA,Nemotron 3 Ultra,"Modelo de grande escala, voltado a raciocínio avançado e aplicações complexas com agentes.",D,68,69,66,64,modelo
+33,NVIDIA,Nemotron 3 Super,"Modelo de raciocínio de alta precisão para aplicações multiagente.",D,65,66,63,62,modelo
+34,NVIDIA,Nemotron 2 Nano,"Modelo compacto de geração anterior, priorizando eficiência e execução de tarefas direcionadas.",D,55,57,52,60,modelo
