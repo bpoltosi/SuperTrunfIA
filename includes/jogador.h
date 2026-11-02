@@ -9,21 +9,25 @@ typedef struct {
 
     Carta *cartas;
     int quantidade_cartas;
+    int capacidade_cartas;
 } Jogador;
 
-// inicializa um jogador
+// Inicializa um jogador sem alocar cartas inicialmente.
 void inicializarJogador(Jogador *jogador, int id, const char *nome);
 
-// adiciona uma carta à mão
+// Adiciona uma carta ao final da pilha do jogador.
 int adicionarCarta(Jogador *jogador, Carta carta);
 
-// remove uma carta da mão
-void removerCarta(Jogador *jogador, int indice);
+// Remove uma carta pelo índice informado.
+int removerCarta(Jogador *jogador, int indice);
 
-// retorna a carta do topo
-Carta obterCartaTopo(Jogador *jogador);
+// Consulta a carta da frente sem removê-la.
+int obterCartaTopo(const Jogador *jogador, Carta *carta);
 
-// libera a memória do jogador
+// Retira e devolve a carta da frente da pilha.
+int retirarCartaTopo(Jogador *jogador, Carta *carta);
+
+// Libera a memória das cartas do jogador.
 void liberarJogador(Jogador *jogador);
 
 #endif
