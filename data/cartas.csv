@@ -1,24 +1,24 @@
 id,empresa,modelo,caracteristicas,raciocinio,programacao,matematica,conhecimento,tipo_carta
-1,OpenAI,GPT-6 Astra,"Modelo de fronteira para raciocínio complexo, ciência, programação e trabalho profissional.",92,90,91,90,modelo
-2,Anthropic,Claude Opus 5.5,"Modelo de ponta, especialmente forte em programação agentiva e trabalho complexo.",91,92,89,89,modelo
-3,Google DeepMind,Gemini 4 Argon,"Modelo de fronteira multimodal, forte em raciocínio, conhecimento e tarefas complexas.",91,89,90,92,modelo
-4,DeepSeek,DeepSeek V4-Pro,"Modelo de alto desempenho da família V4, voltado a tarefas complexas e agentes.",89,90,91,88,modelo
-5,OpenAI,GPT-6.1 Sol,"Desempenho próximo ao topo, com equilíbrio entre raciocínio, programação e eficiência.",87,86,86,87,modelo
-6,Anthropic,Claude Sonnet 5.5,"Alto desempenho em programação e tarefas profissionais, com perfil equilibrado.",86,88,83,85,modelo
-7,Google DeepMind,Gemini 3.1 Pro,"Modelo de alto desempenho geral, com boa capacidade de raciocínio e matemática.",86,84,87,87,modelo
-8,xAI,Grok 4.7,"Modelo avançado para programação, conhecimento e tarefas profissionais de longa duração.",85,86,80,83,modelo
-9,DeepSeek,DeepSeek R1,"Modelo de raciocínio com destaque histórico em matemática e resolução de problemas.",86,82,89,80,modelo
-10,Mistral AI,Mistral Large 4,"Modelo multimodal aberto de uso geral, voltado a raciocínio, programação e agentes.",84,85,83,83,modelo
-11,OpenAI,GPT-6.1 Terra,"Forte em raciocínio visual, uso de computador e tarefas técnicas; destaque relativo em matemática.",79,77,80,78,modelo
-12,Anthropic,Claude Fable 5.1,"Forte em tarefas agentivas, raciocínio e matemática avançada.",80,79,81,76,modelo
-13,Anthropic,Claude Mythos 5.1,"Modelo avançado de raciocínio e capacidades complexas.",79,78,80,77,modelo
-14,Google DeepMind,Gemini 3.8 Flash,"Modelo rápido, com capacidades avançadas em engenharia de software e fluxos agentivos.",79,80,76,78,modelo
-15,Google DeepMind,Gemini 3.7 Flash,"Geração Flash anterior, equilibrando velocidade e capacidade geral.",76,75,73,77,modelo
-16,Meta,Muse Spark,"Modelo multimodal de raciocínio, com uso de ferramentas e orquestração de agentes.",78,70,75,79,modelo
-17,Meta,Llama 4 Maverick,"Modelo aberto multimodal de uso geral, com boa capacidade geral.",75,73,70,75,modelo
-18,xAI,Grok 4.6,"Geração de alto desempenho, com melhorias em agentes e tarefas visuais.",80,79,74,77,modelo
-19,Mistral AI,Mistral Small 4,"Modelo eficiente que combina instruções, raciocínio e programação.",75,76,73,74,modelo
-20,Especial,Alan Turing,"Carta especial simbólica e histórica: pioneirismo da computação, lógica matemática e fundamentos teóricos da inteligência artificial.",78,55,78,72,super_trunfo
+1,Especial,Alan Turing,"Carta especial simbólica e histórica: pioneirismo da computação, lógica matemática e fundamentos teóricos da inteligência artificial.",90,70,99,80,super_trunfo
+2,OpenAI,GPT-6 Astra,"Modelo de fronteira para raciocínio complexo, ciência, programação e trabalho profissional.",92,90,91,90,modelo
+3,Anthropic,Claude Opus 5.5,"Modelo de ponta, especialmente forte em programação agentiva e trabalho complexo.",91,92,89,89,modelo
+4,Google DeepMind,Gemini 4 Argon,"Modelo de fronteira multimodal, forte em raciocínio, conhecimento e tarefas complexas.",91,89,90,92,modelo
+5,DeepSeek,DeepSeek V4-Pro,"Modelo de alto desempenho da família V4, voltado a tarefas complexas e agentes.",89,90,91,88,modelo
+6,OpenAI,GPT-6.1 Sol,"Desempenho próximo ao topo, com equilíbrio entre raciocínio, programação e eficiência.",87,86,86,87,modelo
+7,Anthropic,Claude Sonnet 5.5,"Alto desempenho em programação e tarefas profissionais, com perfil equilibrado.",86,88,83,85,modelo
+8,Google DeepMind,Gemini 3.1 Pro,"Modelo de alto desempenho geral, com boa capacidade de raciocínio e matemática.",86,84,87,87,modelo
+9,xAI,Grok 4.7,"Modelo avançado para programação, conhecimento e tarefas profissionais de longa duração.",85,86,80,83,modelo
+10,DeepSeek,DeepSeek R1,"Modelo de raciocínio com destaque histórico em matemática e resolução de problemas.",86,82,89,80,modelo
+11,Mistral AI,Mistral Large 4,"Modelo multimodal aberto de uso geral, voltado a raciocínio, programação e agentes.",84,85,83,83,modelo
+12,OpenAI,GPT-6.1 Terra,"Forte em raciocínio visual, uso de computador e tarefas técnicas; destaque relativo em matemática.",79,77,80,78,modelo
+13,Anthropic,Claude Fable 5.1,"Forte em tarefas agentivas, raciocínio e matemática avançada.",80,79,81,76,modelo
+14,Anthropic,Claude Mythos 5.1,"Modelo avançado de raciocínio e capacidades complexas.",79,78,80,77,modelo
+15,Google DeepMind,Gemini 3.8 Flash,"Modelo rápido, com capacidades avançadas em engenharia de software e fluxos agentivos.",79,80,76,78,modelo
+16,Google DeepMind,Gemini 3.7 Flash,"Geração Flash anterior, equilibrando velocidade e capacidade geral.",76,75,73,77,modelo
+17,Meta,Muse Spark,"Modelo multimodal de raciocínio, com uso de ferramentas e orquestração de agentes.",78,70,75,79,modelo
+18,Meta,Llama 4 Maverick,"Modelo aberto multimodal de uso geral, com boa capacidade geral.",75,73,70,75,modelo
+19,xAI,Grok 4.6,"Geração de alto desempenho, com melhorias em agentes e tarefas visuais.",80,79,74,77,modelo
+20,Mistral AI,Mistral Small 4,"Modelo eficiente que combina instruções, raciocínio e programação.",75,76,73,74,modelo
 21,OpenAI,GPT-6 Luna,"Modelo econômico e rápido para tarefas focadas e de alto volume.",68,66,65,69,modelo
 22,Meta,Llama 4 Scout,"Modelo aberto com contexto extenso e foco em eficiência.",65,62,60,65,modelo
 23,Meta,Llama 3.3 70B Instruct,"Modelo aberto de geração anterior, competente em instruções e tarefas gerais.",66,65,62,68,modelo
