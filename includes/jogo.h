@@ -1,42 +1,94 @@
+
 #ifndef JOGO_H
 #define JOGO_H
 
 #include "baralho.h"
 #include "jogador.h"
+#include "carta.h"
 
-typedef struct {
+// Monte que acumula as cartas durante os empates
+typedef struct
+{
+    Carta *cartas;
+    int quantidade;
+    int capacidade;
+} MonteDisputa;
+
+// Controle individual dos jogadores durante um desempate
+typedef struct
+{
+    int participa_desempate;
+
+    // Referência à carta que já está no Monte de Disputa
+    int tem_carta_reutilizada;
+    Carta carta_reutilizada;
+
+} EstadoDesempate;
+
+// Estrutura principal da partida
+typedef struct
+{
     Jogador *jogadores;
     int quantidade_jogadores;
 
     Baralho baralho;
+    MonteDisputa monte_disputa;
+
+    EstadoDesempate *estados;
 
     int rodada_atual;
     int jogador_atual;
     int jogo_ativo;
+
 } Jogo;
 
-// inicializa uma nova partida
+                    // INICIALIZAÇÃO E FINALIZAÇÃO
+
+// Inicializa uma partida
 int inicializarJogo(Jogo *jogo, int quantidade_jogadores);
 
-// executa o ciclo de uma rodada
-void executarRodada(Jogo *jogo);
+// Libera os recursos utilizados pela partida
+void finalizarJogo(Jogo *jogo);
 
-// solicita a escolha do atributo
-Atributo selecionarAtributo(Jogo *jogo);
+                    // CONTROLE DAS RODADAS
 
-// determina o vencedor da rodada
-int determinarVencedor(Jogo *jogo, Atributo atributo);
+// Executa uma rodada normal
+int executarRodada(Jogo *jogo, Atributo atributo);
 
-// atualiza as cartas dos jogadores após a rodada
-void atualizarRodada(Jogo *jogo, int vencedor);
+// Executa uma sequência de desempates
+int executarDesempate(Jogo *jogo, Atributo atributo);
 
-// verifica se a partida terminou
+// Determina os jogadores empatados na maior pontuação
+int determinarEmpatados(Jogo *jogo, Atributo atributo, int *empatados);
+
+                    // MONTE DE DISPUTA
+
+// Adiciona uma carta ao monte
+int adicionarCartaDisputa(Jogo *jogo, Carta carta);
+
+// Entrega todas as cartas ao vencedor
+int entregarMonteDisputa(Jogo *jogo, int vencedor);
+
+// Limpa o monte após a resolução
+void limparMonteDisputa(Jogo *jogo);
+
+                    // CARTAS E DESEMPATE
+
+// Obtém a carta que o jogador utilizará
+int obterCartaConfronto(Jogo *jogo, int indice_jogador, Carta *carta, int *adicionar_ao_monte);
+
+// Prepara os jogadores que continuarão no desempate
+void atualizarParticipantesDesempate(Jogo *jogo, int *empatados, int quantidade_empatados);
+
+// Verifica se o jogador pode continuar participando
+int verificarJogadorDesempate(Jogo *jogo, int indice_jogador);
+
+                    // CONDIÇÕES DE VITÓRIA
+
+// Verifica se a partida terminou
 int verificarFimJogo(Jogo *jogo);
 
-// retorna o vencedor da partida
+// Identifica o vencedor da partida
 Jogador *determinarVencedorJogo(Jogo *jogo);
-
-// encerra a partida e libera os recursos
-void finalizarJogo(Jogo *jogo);
 
 #endif

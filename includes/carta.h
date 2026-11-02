@@ -11,7 +11,7 @@ typedef enum {
 typedef struct {
     int id;
     char empresa[50];
-    char modelo[80];
+    char modelo[50];
     char caracteristicas[200];
 
     int raciocinio;
