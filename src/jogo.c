@@ -73,9 +73,7 @@ int adicionarCartaDisputa(Jogo *jogo, Carta carta)
 
 int entregarMonteDisputa(Jogo *jogo, int vencedor)
 {
-    int quantidade_atual;
-    int quantidade_monte;
-
+    int quantidade_atual, quantidade_monte;
     if (jogo == NULL || vencedor < 0 ||
         vencedor >= jogo->quantidade_jogadores ||
         jogo->monte_disputa.quantidade < 0 ||
@@ -84,8 +82,6 @@ int entregarMonteDisputa(Jogo *jogo, int vencedor)
 
     quantidade_atual = jogo->jogadores[vencedor].quantidade_cartas;
     quantidade_monte = jogo->monte_disputa.quantidade;
-
-    /* Valida toda a capacidade antes de transferir qualquer carta. */
     if (quantidade_atual < 0 || quantidade_atual + quantidade_monte > MAX_CARTAS)
         return 0;
 
@@ -126,6 +122,11 @@ int verificarFimJogo(Jogo *jogo)
 {
     if (jogo == NULL || jogo->quantidade_jogadores != MAX_JOGADORES)
         return -1;
+
+    if (jogo->jogadores[0].quantidade_cartas == MAX_CARTAS ||
+        jogo->jogadores[1].quantidade_cartas == MAX_CARTAS)
+        return 1;
+
     return 0;
 }
 
@@ -133,8 +134,10 @@ Jogador *determinarVencedorJogo(Jogo *jogo)
 {
     if (verificarFimJogo(jogo) != 1)
         return NULL;
+
     for (int i = 0; i < MAX_JOGADORES; i++)
         if (jogo->jogadores[i].quantidade_cartas == MAX_CARTAS)
             return &jogo->jogadores[i];
+
     return NULL;
 }
