@@ -1,201 +1,142 @@
-
-#include <stdlib.h>
 #include <string.h>
 
 #include "jogo.h"
 #include "interface.h"
 #include "util.h"
 
-// INICIALIZAÇÃO E FINALIZAÇÃO
-
 int inicializarJogo(Jogo *jogo, int quantidade_jogadores)
 {
+    if (jogo == NULL || quantidade_jogadores < 2 ||
+        quantidade_jogadores > MAX_JOGADORES)
+        return 0;
 
-    // Inicializar os campos da estrutura Jogo
+    memset(jogo, 0, sizeof(*jogo));
+    jogo->quantidade_jogadores = quantidade_jogadores;
 
-    // Alocar memória para os jogadores
+    for (int i = 0; i < quantidade_jogadores; i++)
+        inicializarJogador(&jogo->jogadores[i], i + 1, "");
 
-    // Alocar memória para os estados de desempate
+    if (!carregarBaralhoCSV(&jogo->baralho, "data/cartas.csv"))
+        return 0;
 
-    // Inicializar o Monte de Disputa
+    embaralharBaralho(&jogo->baralho);
 
-    // Carregar o baralho
+    if (!distribuirCartas(&jogo->baralho, jogo->jogadores,
+                          quantidade_jogadores))
+    {
+        liberarBaralho(&jogo->baralho);
+        return 0;
+    }
 
-    // Embaralhar as cartas
-
-    // Distribuir as cartas
-
-    // Inicializar contador de rodadas
-
+    jogo->rodada_atual = 1;
+    jogo->jogador_atual = 0;
+    jogo->jogo_ativo = 1;
     return 1;
 }
 
 void finalizarJogo(Jogo *jogo)
 {
+    if (jogo == NULL)
+        return;
 
-    // Liberar memória dos jogadores
+    for (int i = 0; i < jogo->quantidade_jogadores; i++)
+        liberarJogador(&jogo->jogadores[i]);
 
-    // Liberar memória do baralho
-
-    // Liberar memória do Monte de Disputa
-
-    // Liberar memória dos estados
+    liberarBaralho(&jogo->baralho);
+    limparMonteDisputa(jogo);
+    memset(jogo->estados, 0, sizeof(jogo->estados));
+    jogo->quantidade_jogadores = 0;
+    jogo->jogo_ativo = 0;
 }
-
-// CONTROLE DAS RODADAS
 
 int executarRodada(Jogo *jogo, Atributo atributo)
 {
-
-    // 1. Obter a carta de cada jogador ativo
-
-    // 2. Adicionar as cartas utilizadas ao Monte de Disputa
-
-    // 3. Comparar as pontuações
-
-    // 4. Identificar o maior resultado
-
-    // 5. Verificar se houve empate
-
-    // 6. Se houver empate:
-    //    - Identificar os jogadores empatados
-    //    - Atualizar os participantes do desempate
-    //    - Executar o desempate
-
-    // 7. Se não houver empate:
-    //    - Entregar o Monte ao vencedor
-
-    // 8. Atualizar a rodada
-
+    (void)jogo;
+    (void)atributo;
     return -1;
 }
 
 int executarDesempate(Jogo *jogo, Atributo atributo)
 {
-
-    // Enquanto houver empate:
-
-    // 1. Obter as cartas dos participantes
-
-    // 2. Comparar as pontuações
-
-    // 3. Identificar quem obteve a maior pontuação
-
-    // 4. Atualizar os participantes empatados
-
-    // 5. Se houver um único vencedor:
-    //    - Entregar todo o Monte de Disputa
-    //    - Encerrar o desempate
-
+    (void)jogo;
+    (void)atributo;
     return -1;
 }
 
 int determinarEmpatados(Jogo *jogo, Atributo atributo, int *empatados)
 {
-
-    // Encontrar a maior pontuação
-
-    // Identificar todos os jogadores com essa pontuação
-
-    // Armazenar os índices dos empatados
-
-    // Retornar a quantidade de jogadores empatados
-
+    (void)jogo;
+    (void)atributo;
+    (void)empatados;
     return 0;
 }
 
-// MONTE DE DISPUTA
-
 int adicionarCartaDisputa(Jogo *jogo, Carta carta)
 {
+    if (jogo == NULL || jogo->monte_disputa.quantidade < 0 ||
+        jogo->monte_disputa.quantidade >= MAX_CARTAS)
+        return 0;
 
-    // Verificar se existe capacidade disponível
-
-    // Se necessário, aumentar a capacidade com realloc
-
-    // Adicionar a carta ao Monte de Disputa
-
-    // Atualizar a quantidade de cartas
-
+    jogo->monte_disputa.cartas[jogo->monte_disputa.quantidade++] = carta;
     return 1;
 }
 
 int entregarMonteDisputa(Jogo *jogo, int vencedor)
 {
+    if (jogo == NULL || vencedor < 0 ||
+        vencedor >= jogo->quantidade_jogadores)
+        return 0;
 
-    // Adicionar todas as cartas do Monte
-    // à pilha do jogador vencedor
+    for (int i = 0; i < jogo->monte_disputa.quantidade; i++)
+    {
+        if (!adicionarCarta(&jogo->jogadores[vencedor],
+                            jogo->monte_disputa.cartas[i]))
+            return 0;
+    }
 
-    // Limpar o Monte após a transferência
-
+    limparMonteDisputa(jogo);
     return 1;
 }
 
 void limparMonteDisputa(Jogo *jogo)
 {
-
-    // Zerar a quantidade de cartas do monte
+    if (jogo != NULL)
+        jogo->monte_disputa.quantidade = 0;
 }
 
-// CARTAS E DESEMPATE
-
-int obterCartaConfronto(Jogo *jogo, int indice_jogador, Carta *carta, int *adicionar_ao_monte)
+int obterCartaConfronto(Jogo *jogo, int indice_jogador, Carta *carta,
+                        int *adicionar_ao_monte)
 {
-
-    // Se o jogador possui cartas:
-    //    - Retirar a carta do topo
-    //    - Retornar a carta
-    //    - Indicar que deve entrar no Monte
-    //
-    // Se não possui cartas, mas tem carta reutilizável:
-    //    - Retornar a referência à carta reutilizável
-    //    - Indicar que NÃO deve entrar no Monte
-    //
-    // Caso contrário:
-    //    - Jogador não pode participar
-
+    (void)jogo;
+    (void)indice_jogador;
+    (void)carta;
+    (void)adicionar_ao_monte;
     return 0;
 }
 
-void atualizarParticipantesDesempate(Jogo *jogo, int *empatados, int quantidade_empatados)
+void atualizarParticipantesDesempate(Jogo *jogo, int *empatados,
+                                      int quantidade_empatados)
 {
-
-    // Desativar todos os participantes anteriores
-
-    // Ativar somente os jogadores empatados
-
-    // Preservar as cartas reutilizáveis
+    (void)jogo;
+    (void)empatados;
+    (void)quantidade_empatados;
 }
 
 int verificarJogadorDesempate(Jogo *jogo, int indice_jogador)
 {
-
-    // Verificar se participa do desempate
-
-    // Verificar se possui cartas disponíveis
-    // ou uma carta reutilizável
-
+    (void)jogo;
+    (void)indice_jogador;
     return 0;
 }
 
-// CONDIÇÕES DE VITÓRIA
-
 int verificarFimJogo(Jogo *jogo)
 {
-
-    // Verificar quantos jogadores ainda possuem cartas
-
-    // Se restar apenas um jogador:
-    //    - Encerrar a partida
-
+    (void)jogo;
     return 0;
 }
 
 Jogador *determinarVencedorJogo(Jogo *jogo)
 {
-
-    // Identificar o jogador que possui
-    // as cartas restantes da partida
-
+    (void)jogo;
     return NULL;
 }
