@@ -5,20 +5,13 @@
 #include "jogador.h"
 
 typedef struct {
-    Carta *cartas;
+    Carta cartas[MAX_CARTAS];
     int quantidade;
 } Baralho;
 
-// carrega as cartas do arquivo CSV
 int carregarBaralhoCSV(Baralho *baralho, const char *caminho);
-
-// embaralha as cartas
 void embaralharBaralho(Baralho *baralho);
-
-// distribui as cartas entre os jogadores
 int distribuirCartas(Baralho *baralho, Jogador *jogadores, int quantidade_jogadores);
-
-// libera a memória do baralho
 void liberarBaralho(Baralho *baralho);
 
 #endif
