@@ -26,6 +26,17 @@ int verificarSuperTrunfo(Carta carta)
     return carta.super_trunfo == 1;
 }
 
+int compararCartasComSuperTrunfo(Carta carta1, Carta carta2, Atributo atributo)
+{
+    int super1 = verificarSuperTrunfo(carta1);
+    int super2 = verificarSuperTrunfo(carta2);
+
+    if (super1 && !super2 && carta2.classe != CLASSE_A) return 1;
+    if (super2 && !super1 && carta1.classe != CLASSE_A) return -1;
+
+    return compararCartas(carta1, carta2, atributo);
+}
+
 ClasseCarta obterClasseCarta(const Carta *carta)
 {
     return carta == 0 ? CLASSE_INVALIDA : carta->classe;
