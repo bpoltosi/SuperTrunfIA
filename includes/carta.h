@@ -18,14 +18,11 @@ typedef struct {
     int super_trunfo;
 } Carta;
 
-/* Pontuação 0–100; -1 se o atributo for inválido. */
 int obterPontuacao(Carta carta, Atributo atributo);
-/* 1: carta1 vence; -1: carta2 vence; 0: empate; -2: atributo inválido. */
 int compararCartas(Carta carta1, Carta carta2, Atributo atributo);
-/* 1 se Super Trunfo; 0 caso contrário. */
+/* Aplica a regra especial; retorno: 1 carta1, -1 carta2, 0 empate, -2 atributo inválido. */
+int compararCartasComSuperTrunfo(Carta carta1, Carta carta2, Atributo atributo);
 int verificarSuperTrunfo(Carta carta);
-/* Classe A–D; CLASSE_INVALIDA para ponteiro nulo. */
 ClasseCarta obterClasseCarta(const Carta *carta);
-/* 1 se os campos da carta forem válidos; 0 caso contrário. */
 int validarCarta(const Carta *carta);
 #endif
