@@ -1,6 +1,8 @@
 #ifndef CARTA_H
 #define CARTA_H
 
+#define MAX_CARTAS 34
+
 typedef enum {
     RACIOCINIO,
     PROGRAMACAO,
@@ -22,13 +24,8 @@ typedef struct {
     int super_trunfo;
 } Carta;
 
-// consulta a pontuação de um atributo
 int obterPontuacao(Carta carta, Atributo atributo);
-
-// compara duas cartas
 int compararCartas(Carta carta1, Carta carta2, Atributo atributo);
-
-// verifica se a carta é um Super Trunfo
 int verificarSuperTrunfo(Carta carta);
 
 #endif

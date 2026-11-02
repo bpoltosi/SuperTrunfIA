@@ -1,9 +1,5 @@
-#include <stdlib.h>
 #include <string.h>
-
 #include "jogador.h"
-
-#define CAPACIDADE_INICIAL_CARTAS 4
 
 void inicializarJogador(Jogador *jogador, int id, const char *nome)
 {
@@ -11,9 +7,7 @@ void inicializarJogador(Jogador *jogador, int id, const char *nome)
         return;
 
     jogador->id = id;
-    jogador->cartas = NULL;
     jogador->quantidade_cartas = 0;
-    jogador->capacidade_cartas = 0;
 
     if (nome == NULL)
         jogador->nome[0] = '\0';
@@ -26,31 +20,11 @@ void inicializarJogador(Jogador *jogador, int id, const char *nome)
 
 int adicionarCarta(Jogador *jogador, Carta carta)
 {
-    Carta *novo_vetor;
-    int nova_capacidade;
-
-    if (jogador == NULL)
+    if (jogador == NULL || jogador->quantidade_cartas < 0 ||
+        jogador->quantidade_cartas >= MAX_CARTAS)
         return 0;
 
-    if (jogador->quantidade_cartas == jogador->capacidade_cartas)
-    {
-        nova_capacidade = (jogador->capacidade_cartas == 0)
-                              ? CAPACIDADE_INICIAL_CARTAS
-                              : jogador->capacidade_cartas * 2;
-
-        novo_vetor = realloc(jogador->cartas,
-                             (size_t)nova_capacidade * sizeof(Carta));
-
-        if (novo_vetor == NULL)
-            return 0;
-
-        jogador->cartas = novo_vetor;
-        jogador->capacidade_cartas = nova_capacidade;
-    }
-
-    jogador->cartas[jogador->quantidade_cartas] = carta;
-    jogador->quantidade_cartas++;
-
+    jogador->cartas[jogador->quantidade_cartas++] = carta;
     return 1;
 }
 
@@ -69,18 +43,16 @@ int removerCarta(Jogador *jogador, int indice)
     }
 
     jogador->quantidade_cartas--;
-
     return 1;
 }
 
 int obterCartaTopo(const Jogador *jogador, Carta *carta)
 {
     if (jogador == NULL || carta == NULL ||
-        jogador->quantidade_cartas <= 0 || jogador->cartas == NULL)
+        jogador->quantidade_cartas <= 0)
         return 0;
 
     *carta = jogador->cartas[0];
-
     return 1;
 }
 
@@ -97,9 +69,6 @@ void liberarJogador(Jogador *jogador)
     if (jogador == NULL)
         return;
 
-    free(jogador->cartas);
-
-    jogador->cartas = NULL;
     jogador->quantidade_cartas = 0;
-    jogador->capacidade_cartas = 0;
+    jogador->nome[0] = '\0';
 }
