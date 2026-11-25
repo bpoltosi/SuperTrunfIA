@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "jogo.h"
+#include "util.h"
 
 static Carta makeCard(int id, int value)
 {
@@ -136,9 +137,19 @@ static void executarSimulacaoTeste(unsigned seed)
     assert(guard<20000);
     finalizarJogo(&j);
 }
+static void testSorteioParImpar(void)
+{
+    assert(determinarVencedorSorteio(1, 1) == 0);
+    assert(determinarVencedorSorteio(1, 2) == 1);
+    assert(determinarVencedorSorteio(2, 2) == 0);
+    assert(determinarVencedorSorteio(2, 1) == 1);
+    assert(determinarVencedorSorteio(0, 1) == -1);
+    assert(determinarVencedorSorteio(1, 3) == -1);
+}
+
 int main(void)
 {
-    testLifecycleFim(); testRoundWin(); testTieAndReuse(); testEmpateEmTodosAtributos(); testTransferAtomicFail();
+    testSorteioParImpar(); testLifecycleFim(); testRoundWin(); testTieAndReuse(); testEmpateEmTodosAtributos(); testTransferAtomicFail();
     for(unsigned seed=1;seed<=5;seed++) executarSimulacaoTeste(seed);
     puts("TESTES DO MOTOR: TODOS PASSARAM (5 partidas simuladas)");
     return 0;

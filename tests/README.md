@@ -55,3 +55,10 @@ Os testes base também verificam BOM UTF-8, cabeçalho/schema, aspas e escape de
 - Confirmar que o sorteio inicial exibe o nome cadastrado do Jogador 1.
 - Na simulação automática, observar variação dos atributos escolhidos; o smoke test também verifica variedade.
 - Confirmar espaçamento maior entre blocos e linhas da interface, sem prejudicar prompts.
+
+
+## Regressao das issues #52-#54
+
+- `test_engine.c` cobre as quatro combinacoes de escolha/resultado do sorteio (`1=PAR`, `2=IMPAR`) e rejeita valores invalidos.
+- `smoke.ps1` verifica que o jogador responsavel e anunciado antes da escolha do atributo, que a proxima rodada reapresenta essa informacao apos Enter e que o fluxo de simulacao tambem volta a exibi-la depois da limpeza do terminal.
+- `src/main.c` configura locale e code page UTF-8 no Windows; a mensagem de desempate usa o caractere Unicode U+2014 em fonte UTF-8.

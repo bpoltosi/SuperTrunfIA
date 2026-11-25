@@ -168,3 +168,10 @@ As funções listadas são diretrizes de interface. A implementação poderá aj
 ## Implementação concluída — comportamento da primeira rodada
 
 A primeira rodada é obrigatoriamente manual: o usuário participa do sorteio par/ímpar e escolhe o atributo. A opção P/p de simulação é oferecida apenas na pausa após a resolução dessa primeira rodada, garantindo que a partida não comece em modo automático. Se ativada, a simulação segue até o fim pelo mesmo motor de jogo.
+
+
+## Correcoes de interface e compatibilidade (issues #52-#54)
+
+- O sorteio inicial utiliza a mesma codificacao da entrada: `1 = PAR` e `2 = IMPAR`. A comparacao entre escolha e resultado determina diretamente o vencedor; valores fora desse dominio sao invalidos.
+- Antes de solicitar um atributo, a interface identifica o jogador responsavel pela rodada. A mensagem e reapresentada depois da limpeza do terminal, inclusive ao iniciar a simulacao; no desempate, o jogador que escolheu o atributo da rodada que empatou continua responsavel pelas escolhas seguintes.
+- Os fontes sao mantidos em UTF-8. No Windows, o programa configura locale e entrada/saida do console para UTF-8; em outros sistemas, respeita o locale do ambiente. Mensagens com travessao e acentos devem ser verificadas em terminal UTF-8.

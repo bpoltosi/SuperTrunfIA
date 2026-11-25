@@ -1,9 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "jogo.h"
 #include "interface.h"
 #include "util.h"
+
+static void configurarTerminalUTF8(void)
+{
+#ifdef _WIN32
+    (void)setlocale(LC_ALL, ".UTF-8");
+    (void)SetConsoleOutputCP(CP_UTF8);
+    (void)SetConsoleCP(CP_UTF8);
+#else
+    (void)setlocale(LC_ALL, "");
+#endif
+}
 
 static const char *nomeAtributo(Atributo a)
 {
@@ -42,16 +57,20 @@ static int executarPartida(Jogo *jogo, int simulacao)
     printf("\nSorteio inicial: %s, escolha 1 (PAR) ou 2 (IMPAR).\n", jogo->jogadores[0].nome);
     paridade = simulacao ? (rand()%2+1) : lerInteiro(1,2);
     if (paridade < 1 || paridade > 2) return 0;
-    sorteio = rand()%10+1;
-    printf("Escolha %s; sorteio: %d (%s).\n", paridade==1?"PAR":"IMPAR", sorteio, sorteio%2?"IMPAR":"PAR");
-    seletor = (sorteio%2 == (paridade==2)) ? 0 : 1;
-    printf("%s escolhe o primeiro atributo.\n", jogo->jogadores[seletor].nome);
+    /* O sorteio usa a mesma codificacao da entrada: 1 = PAR; 2 = IMPAR. */
+    sorteio = rand()%2+1;
+    printf("Escolha: %s; resultado do sorteio: %d (%s).\n",
+           paridade==1?"PAR":"IMPAR", sorteio, sorteio==1?"PAR":"IMPAR");
+    seletor = determinarVencedorSorteio(paridade, sorteio);
+    if (seletor < 0) return 0;
+    printf("%s venceu o sorteio e escolhe o primeiro atributo.\n", jogo->jogadores[seletor].nome);
     /* A primeira rodada é obrigatoriamente manual; simulação só é oferecida após ela. */
     while (verificarFimJogo(jogo)==0) {
+        int escolha_desempate = seletor;
+        printf("\n\nRODADA %d | %s deve escolher o atributo\n\n",
+               jogo->rodada_atual, jogo->jogadores[seletor].nome);
         Atributo atributo = simulacao ? atributoAleatorio() : solicitarAtributo();
         if (atributo < RACIOCINIO || atributo >= QUANTIDADE_ATRIBUTOS) return 0;
-        int escolha_desempate = seletor;
-        printf("\n\nRODADA %d | Escolha de %s\n\n", jogo->rodada_atual, jogo->jogadores[seletor].nome);
         mostrarConfronto(jogo, atributo, 0);
         int participantes[2];
         int resultado = determinarEmpatados(jogo,atributo,participantes);
@@ -61,9 +80,10 @@ static int executarPartida(Jogo *jogo, int simulacao)
         if (resultado == 2) {
             int desempate=1;
             while (verificarJogadorDesempate(jogo,0) && verificarJogadorDesempate(jogo,1)) {
+                printf("\nDesempate %d — escolha de %s\n",
+                       desempate++, jogo->jogadores[escolha_desempate].nome);
                 Atributo attr = simulacao ? atributoAleatorio() : solicitarAtributo();
                 if (attr < RACIOCINIO || attr >= QUANTIDADE_ATRIBUTOS) return 0;
-                printf("\nDesempate %d — escolha de %s\n",desempate++,jogo->jogadores[escolha_desempate].nome);
                 mostrarConfronto(jogo,attr,1);
                 int participantesTie[2];
                 int tieResult = determinarEmpatados(jogo,attr,participantesTie);
@@ -94,6 +114,7 @@ static int executarPartida(Jogo *jogo, int simulacao)
 }
 int main(void)
 {
+    configurarTerminalUTF8();
     inicializarAleatorio();
     for (;;) {
         exibirMenu();

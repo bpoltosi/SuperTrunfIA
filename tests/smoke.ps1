@@ -12,10 +12,14 @@ $inputs += '0'
 $output = ($inputs -join "`n") | .\build.exe
 $outputText = $output | Out-String
 if ($LASTEXITCODE -ne 0) { throw "Game exited with code $LASTEXITCODE" }
-if (-not $outputText.Contains('RODADA 1 | Escolha de')) { throw 'First manual round was not reached' }
+if (-not $outputText.Contains('RODADA 1 |') -or -not $outputText.Contains('deve escolher o atributo')) { throw 'First manual round did not identify the choosing player before the prompt' }
+$choiceHeaders = [regex]::Matches($outputText, 'RODADA \d+ \| .*deve escolher o atributo')
+if ($choiceHeaders.Count -lt 2) { throw 'Next-round chooser was not displayed after the manual Enter transition' }
 if (-not $outputText.Contains('Sorteio inicial: SmokeP1')) { throw 'Initial draw did not display Player 1 name' }
+if (-not $outputText.Contains('resultado do sorteio:')) { throw 'Initial draw did not display the normalized parity result' }
 if (-not $outputText.Contains('SIMULACAO AUTOMATICA ATIVADA')) { throw 'Simulation activation was not reached' }
 $simulationText = $outputText.Substring($outputText.IndexOf('SIMULACAO AUTOMATICA ATIVADA'))
+if (-not [regex]::IsMatch($simulationText, 'RODADA \d+ \| .*deve escolher o atributo')) { throw 'Simulation did not re-display the choosing player after clearing the terminal' }
 $simulatedAttributes = [regex]::Matches($simulationText, 'Atributo escolhido: ([^=]+) =') | ForEach-Object { $_.Groups[1].Value.Trim() } | Select-Object -Unique
 if ($simulatedAttributes.Count -lt 2) { throw 'Simulation did not demonstrate random attribute variety' }
 if (-not $outputText.Contains('CAMPEAO:')) { throw 'Winner output not found' }
