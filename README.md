@@ -1,58 +1,130 @@
 # SuperTrunfIA
 
-Jogo de Super Trunfo em C com cartas temáticas de modelos de inteligência artificial. A V1 (Core) é um jogo de terminal para dois jogadores, com dados carregados de CSV e sem alocação dinâmica de memória.
+Jogo de **Super Trunfo desenvolvido em C**, com cartas temáticas de modelos de inteligência artificial. A versão atual (V1 — Core) funciona no terminal, suporta dois jogadores e carrega os dados das cartas de um arquivo CSV.
 
-## Cartas e regras
+O projeto prioriza regras explícitas, estruturas estáticas, separação entre motor e interface e validação dos estados da partida.
 
-O baralho possui 34 cartas (33 modelos e Alan Turing como Super Trunfo), quatro atributos de 0 a 100 e classes A, B, C e D. As pontuações são parâmetros de balanceamento do jogo, não benchmarks oficiais.
+## Visão geral
 
-- [Lista e dados de cartas](docs/lista-cartas.md) / [CSV](data/cartas.csv)
-- [Regras completas](docs/regras.md)
-- [Contratos das funções](docs/contratos-funcoes.md)
-- [Interface terminal V1](docs/interface-terminal-v1.md)
-- [Roadmap V1/V2](docs/planejamento-versoes.md)
+- **34 cartas:** 33 modelos de IA e Alan Turing como carta especial Super Trunfo.
+- **4 atributos:** Raciocínio, Programação, Matemática e Conhecimento, com valores de 0 a 100.
+- **Classes:** A, B, C e D, registradas individualmente em cada carta.
+- **Dois jogadores:** 17 cartas iniciais para cada participante.
+- **Desempates:** as cartas da disputa ficam em um monte da mesa até a resolução.
+- **Modos de execução:** toda partida começa manualmente; durante as pausas, Enter mantém o avanço manual e P/p ativa a simulação até o fim.
+
+As pontuações são parâmetros definidos para o jogo e **não representam benchmarks oficiais** dos modelos.
 
 ## Requisitos
 
-- GCC (MinGW no Windows) ou Clang
-- Terminal/PowerShell
-- Nenhuma biblioteca externa
+- GCC com suporte a C11 (MinGW no Windows também é compatível) ou Clang.
+- Windows/PowerShell ou terminal equivalente.
+- Não são necessárias bibliotecas externas.
 
 ## Compilar e executar
 
-Execute na raiz do repositório:
+Execute os comandos a partir da raiz do repositório.
+
+### Windows (PowerShell)
 
 ```powershell
 gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes src\*.c -o build.exe
 .\build.exe
 ```
 
-Menu: 1 inicia uma partida, 2 mostra as regras, 0 encerra. A primeira rodada é manual; depois da primeira rodada, Enter continua manual e P/p ativa simulação até a partida terminar.
+### Linux / macOS
 
-## Testes
-
-Os comandos de testes e o checklist manual estão em [tests/README.md](tests/README.md). Há testes automatizados para cartas, jogadores, CSV, desempates, transferência e cinco partidas simuladas completas.
-
-```powershell
-gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_phase1.c src\carta.c src\jogador.c src\baralho.c -o tests\test_phase1.exe
-.\tests\test_phase1.exe
-
-gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_engine.c src\jogo.c src\carta.c src\jogador.c src\baralho.c src\interface.c src\util.c -o tests\test_engine.exe
-.\tests\test_engine.exe
+```bash
+gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes src/*.c -o build
+./build
 ```
 
-## Estrutura
+O menu oferece as opções:
 
-- `includes/`: tipos, contratos e cabeçalhos
-- `src/`: cartas, jogadores, baralho, motor, interface e utilitários
-- `data/`: CSV de cartas
-- `tests/`: testes automatizados e instruções
-- `docs/`: regras, arquitetura e planejamento
+- `1`: iniciar uma partida;
+- `2`: consultar um resumo das regras;
+- `0`: encerrar o programa.
 
-## Estado
+A primeira rodada sempre exige interação manual, incluindo o sorteio inicial e a escolha do atributo. Depois da primeira rodada, Enter continua no modo manual e P/p inicia a simulação automática.
 
-V1 Core está implementada: menu, entrada dos nomes, sorteio inicial, primeira rodada manual, modo de simulação opcional, rodadas, desempates, monte de disputa, transferência, condição de vitória e limpeza de estado. Testes automatizados e compilação estrita devem ser executados antes de considerar a versão release. Sanitizers dependem de runtimes compatíveis instalados.
+## Regras essenciais
 
-## Versionamento
+1. O baralho contém 34 cartas e é distribuído igualmente entre os dois jogadores.
+2. O jogador definido pelo sorteio inicial escolhe o atributo da primeira rodada.
+3. Nas rodadas principais seguintes, o vencedor da rodada anterior escolhe o próximo atributo.
+4. A maior pontuação no atributo escolhido vence a disputa.
+5. A carta Super Trunfo vence cartas das classes B, C e D. Contra uma carta da classe A, a comparação é feita pelo atributo escolhido.
+6. Em caso de empate, as cartas vão para o monte de disputa e os jogadores empatados escolhem novos atributos para desempatar. O jogador que escolheu o atributo da rodada principal mantém o direito de escolha durante aquele desempate.
+7. O vencedor recebe o monte de disputa. A partida termina quando um jogador reúne as 34 cartas; também existe tratamento para empate técnico quando todas as cartas ficam no monte.
 
-Desenvolvimento da V1 ocorre em branch de trabalho; não fazer commits diretos na `main`. A V2 Visual & Integration é futura e só deve começar após estabilizar e validar a V1.
+## Dados das cartas
+
+Os dados ficam em `data/cartas.csv`. O cabeçalho e a ordem das colunas são:
+
+```csv
+id,empresa,modelo,caracteristicas,classe,raciocinio,programacao,matematica,conhecimento,tipo_carta
+```
+
+O carregamento valida o formato, os campos, os valores numéricos, os IDs e a composição do baralho. O arquivo deve conter exatamente 34 cartas válidas e uma carta `super_trunfo`, da classe A.
+
+## Organização do código
+
+```text
+SuperTrunfIA/
+├── data/
+│   └── cartas.csv
+├── includes/
+│   ├── baralho.h
+│   ├── carta.h
+│   ├── interface.h
+│   ├── jogador.h
+│   ├── jogo.h
+│   └── util.h
+├── src/
+│   ├── baralho.c
+│   ├── carta.c
+│   ├── interface.c
+│   ├── jogador.c
+│   ├── jogo.c
+│   ├── main.c
+│   └── util.c
+└── README.md
+```
+
+Responsabilidades principais:
+
+- `carta.c`: validação, atributos e comparação de cartas;
+- `jogador.c`: operações sobre as mãos dos jogadores;
+- `baralho.c`: leitura do CSV, embaralhamento e distribuição;
+- `jogo.c`: estado da partida, rodadas, desempates e transferência do monte;
+- `interface.c`: mensagens e apresentação no terminal;
+- `util.c`: leitura de dados, sorteio e utilitários de terminal;
+- `main.c`: configuração do terminal e coordenação do fluxo da partida.
+
+Os cabeçalhos em `includes/` definem os tipos e as interfaces públicas das funções.
+
+## Testes e validação
+
+A branch principal atualmente contém os fontes, cabeçalhos e dados do jogo, mas não mantém um diretório de testes automatizados. Para validar uma alteração, no mínimo:
+
+1. Compile com as opções estritas apresentadas acima.
+2. Inicie uma partida e conclua a primeira rodada manualmente.
+3. Verifique o avanço manual com Enter e a ativação da simulação com P/p.
+4. Exercite uma disputa comum e uma situação de empate/desempate.
+5. Confira a contagem de cartas e o encerramento da partida.
+
+Quando testes automatizados forem adicionados novamente ao repositório, seus comandos e sua cobertura deverão ser documentados nesta seção.
+
+## Diretrizes de desenvolvimento
+
+- Preservar a separação entre regras do jogo, interface e utilitários.
+- Respeitar os contratos e limites definidos nos cabeçalhos em `includes/`.
+- Preferir estruturas estáticas e validar entradas, índices, capacidades e integridade das cartas antes de alterar o estado.
+- Não alterar regras ou decisões do jogo como efeito colateral de uma refatoração sintática.
+- Desenvolver em branches de trabalho e integrar por Pull Request. **Não realizar commits diretamente na `main`.**
+
+## Estado e próximos passos
+
+A V1 Core reúne o fluxo de partida, sorteio inicial, escolha de atributos, comparação com Super Trunfo, desempates, monte de disputa, transferência de cartas, simulação opcional e condição de encerramento.
+
+As próximas melhorias de legibilidade e simplificação sintática foram registradas nas Issues **#62 a #66**. A V2 — Visual & Integration — é uma etapa futura e não deve alterar o escopo da V1 antes de sua estabilização e validação.
