@@ -175,3 +175,11 @@ A primeira rodada é obrigatoriamente manual: o usuário participa do sorteio pa
 - O sorteio inicial utiliza a mesma codificacao da entrada: `1 = PAR` e `2 = IMPAR`. A comparacao entre escolha e resultado determina diretamente o vencedor; valores fora desse dominio sao invalidos.
 - Antes de solicitar um atributo, a interface identifica o jogador responsavel pela rodada. A mensagem e reapresentada depois da limpeza do terminal, inclusive ao iniciar a simulacao; no desempate, o jogador que escolheu o atributo da rodada que empatou continua responsavel pelas escolhas seguintes.
 - Os fontes sao mantidos em UTF-8. No Windows, o programa configura locale e entrada/saida do console para UTF-8; em outros sistemas, respeita o locale do ambiente. Mensagens com travessao e acentos devem ser verificadas em terminal UTF-8.
+
+## Ajustes de legibilidade e encerramento (Issues #56-#59)
+
+- Resultados de rodada e desempate usam o nome cadastrado do vencedor, nunca rotulos fixos de posicao.
+- Um separador de sinais de igual divide os blocos dos dois jogadores e outro aparece imediatamente antes do resultado da disputa.
+- O fim da partida tem cabecalho proprio, destaca o campeao e mostra a contagem final dos dois jogadores.
+- Quando ambos os jogadores esgotam as maos com todas as cartas no monte, a interface anuncia empate tecnico.
+- A restricao de dois jogadores continua implementada, mas nao e repetida como mensagem redundante durante a preparacao da partida.

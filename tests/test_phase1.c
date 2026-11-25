@@ -39,6 +39,8 @@ static void testarCarta(void)
     invalid=a; invalid.super_trunfo=2; assert(!validarCarta(&invalid));
     invalid=b; invalid.super_trunfo=1; assert(!validarCarta(&invalid));
     invalid=a; invalid.empresa[0]='\0'; assert(!validarCarta(&invalid));
+    invalid=a; memset(invalid.modelo,'X',sizeof invalid.modelo); assert(!validarCarta(&invalid));
+    invalid=a; memset(invalid.empresa,'X',sizeof invalid.empresa); assert(!validarCarta(&invalid));
     puts("testarCarta: OK");
 }
 static void testarJogador(void)

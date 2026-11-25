@@ -65,3 +65,12 @@ Funções do motor ainda não implementadas devem respeitar esses contratos ao s
 ## Loader e distribuição — garantias de validação
 
 `carregarBaralhoCSV` valida cabeçalho/schema, encoding BOM inicial, CSV delimitado/aspas/escape, tamanho da linha e dos campos, conversões numéricas completas, IDs únicos e composição. O destino fica com quantidade zero em falha e recebe o array temporário apenas no sucesso. `distribuirCartas` valida cartas e IDs duplicados antes de mutar; prepara cópias dos jogadores e publica ambas as mãos (17/17) somente após sucesso, consumindo o baralho no final.
+
+## Integridade do estado e encerramento excepcional
+
+- verificarFimJogo valida a quantidade total de 34 cartas, a validade de cada carta, a terminacao NUL dos campos de texto e a unicidade dos IDs entre as duas maos e o monte de disputa. Retorna -1 se houver duplicidade, carta invalida, contagem inconsistente ou estado fora dos limites.
+- verificarFimJogo tambem valida os flags de desempate e a correspondencia da carta reutilizada com o topo atual da mao.
+- verificarFimJogo retorna 1 quando um jogador possui as 34 cartas ou quando ambos estao sem cartas e as 34 permanecem no monte (empate tecnico).
+- determinarVencedorJogo retorna NULL no empate tecnico; a interface apresenta o encerramento como empate, sem atribuir campeao.
+- entregarMonteDisputa valida previamente as duas maos e o monte, incluindo IDs duplicados entre zonas, antes de embaralhar ou transferir. Em falha, nao altera quantidades nem conteudo.
+- obterCartaConfronto rejeita estado de reutilizacao obsoleto: a carta reutilizada deve continuar valida e corresponder ao topo atual da mao.

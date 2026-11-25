@@ -88,3 +88,9 @@ A especificação de etapas, prints e comportamento de entrada está detalhada e
 ## Validação do arquivo de cartas
 
 O loader exige o cabeçalho e a ordem de campos documentados. Aceita BOM UTF-8 inicial, CRLF/LF, campos entre aspas, vírgulas dentro de campos e aspas escapadas (`""`). Rejeita cabeçalho/schema divergente, linhas vazias, linhas acima do buffer, campos acima dos limites das estruturas, valores inválidos, IDs repetidos, contagem e composição incorretas. A carga usa array temporário estático e só publica o baralho completo quando todas as validações passam. Erros são reportados em stderr com linha e validação/campo.
+
+## Desempate sem cartas disponiveis
+
+- Se um empate deixar exatamente um jogador sem cartas para revelar, o adversario recebe imediatamente todo o monte de disputa e vence por impossibilidade de continuacao do oponente.
+- Se ambos ficarem sem cartas ao mesmo tempo e as 34 cartas estiverem no monte de disputa, a partida termina em empate tecnico. Nenhum vencedor e inventado e nenhuma carta e descartada.
+- Essas condicoes tambem se aplicam quando o par de cartas de desempate empata nos quatro atributos e precisa ser recolhido para revelar um novo par.
