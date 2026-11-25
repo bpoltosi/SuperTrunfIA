@@ -69,8 +69,9 @@ Os cabeçalhos em includes/ são a referência normativa dos contratos das funç
 - Em um empate, o jogador que escolheu o atributo do confronto principal também escolhe o atributo de cada desempate. Ele pode escolher um atributo diferente do que causou o empate.
 - O ciclo de partida é: escolha de atributo → combate/revelação → desempates, se houver → resultado e atualização dos montes → próxima escolha.
 - A interface informa a quantidade de cartas de cada jogador, especialmente no começo e no resultado das rodadas.
-- Entre etapas, Enter avança o jogo normalmente. A tecla P/p ativa a simulação automática até o fim da partida.
-- O modo de simulação usa o mesmo motor e as mesmas regras da partida interativa; decisões de atributos são automatizadas e aleatórias, sem criar uma lógica de jogo paralela.
+- **Toda partida começa em modo manual**, sem opção de iniciar diretamente em simulação.
+- Durante a partida, nos pontos de pausa previstos, Enter avança mantendo o modo manual; P/p ativa a simulação automática até o fim da partida.
+- A simulação automatiza as escolhas de atributos de forma aleatória e reutiliza o mesmo motor e as mesmas regras, sem criar uma lógica de jogo paralela.
 - A partida termina quando um jogador conquista todas as cartas; o terminal exibe o campeão e a contagem final.
 - A separação entre lógica do jogo e impressão deve ser preservada: apresentação e entrada de terminal ficam encapsuladas no módulo de interface, evitando prints espalhados no motor.
 

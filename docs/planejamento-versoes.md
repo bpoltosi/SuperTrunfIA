@@ -9,14 +9,16 @@ Este documento registra a evolução planejada do **SuperTrunfIA** em duas etapa
 **Objetivo:** entregar o jogo funcional em C, com execução pelo terminal e regras compatíveis com o guia do trabalho.
 
 Escopo previsto:
-
-- Baralho temático de modelos de inteligência artificial, com no mínimo 24 cartas.
-- Cartas com atributos identificados por A, B, C e D.
+- Baralho temático de modelos de inteligência artificial, com 34 cartas.
+- Cartas com quatro atributos identificados (Raciocínio, Programação, Matemática e Conhecimento).
 - Carta especial Super Trunfo e regra de funcionamento documentada.
+- Dados das cartas carregados por CSV.
 - Embaralhamento e distribuição aleatória das cartas entre dois jogadores.
-- Partida automática, sem exigir decisões ou entradas explícitas dos jogadores.
+- **Toda partida começa obrigatoriamente em modo manual:** os jogadores fazem as escolhas e entradas do início da partida.
+- **Durante a partida, nos pontos de pausa previstos, pode-se ativar a simulação automática** para automatizar as escolhas de atributos e executar as rodadas restantes até o fim.
+- A simulação não é uma opção de inicialização nem substitui o modo manual inicial; reutiliza o mesmo motor e as mesmas regras, sem lógica de jogo duplicada.
 - Comparação dos atributos, definição do vencedor de cada rodada e transferência das cartas.
-- Tratamento de empates, incluindo cartas acumuladas na mesa e rodada de desempate.
+- Tratamento de empates, incluindo cartas acumuladas no monte da mesa e rodada de desempate.
 - Condição de encerramento quando um jogador conquistar todas as cartas.
 - Código organizado, testes de casos omissos e documentação das regras.
 
@@ -27,7 +29,6 @@ A prioridade da V1 é **correção, clareza e conformidade com o enunciado**, n�
 **Objetivo:** evoluir o núcleo do jogo para uma aplicação com interface visual e possibilidade de integração com outros componentes.
 
 Esta etapa é uma expansão futura, não um requisito para concluir a V1. O escopo poderá incluir:
-
 - Interface visual para acompanhar partidas, cartas, atributos e resultados.
 - Frontend e backend com responsabilidades bem definidas.
 - API para comunicação entre a interface e o motor do jogo.
