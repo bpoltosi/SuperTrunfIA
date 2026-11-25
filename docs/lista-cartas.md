@@ -22,42 +22,42 @@ Turing é uma carta especial e **não é contado como modelo de IA** nem na quan
 
 ## Lista do baralho
 
-| ID | Classe | Empresa | Modelo / carta | Raciocinio | Programacao | Matematica | Conhecimento |
+| ID | Classe | Empresa | Modelo / carta | Raciocínio | Programação | Matemática | Conhecimento |
 |---:|:---:|---|---|---:|---:|---:|---:|
-| 1 | A | Especial | Alan Turing - Super Trunfo | 90 | 70 | 99 | 80 |
-| 2 | A | OpenAI | GPT-6 Astra | 100 | 100 | 100 | 100 |
-| 3 | A | Anthropic | Claude Opus 5.5 | 100 | 100 | 100 | 100 |
-| 4 | A | Google DeepMind | Gemini 4 Argon | 100 | 100 | 100 | 100 |
-| 5 | A | DeepSeek | DeepSeek V4-Pro | 100 | 100 | 100 | 100 |
-| 6 | B | OpenAI | GPT-6.1 Sol | 100 | 100 | 100 | 100 |
-| 7 | B | Anthropic | Claude Sonnet 5.5 | 100 | 100 | 100 | 100 |
-| 8 | B | Google DeepMind | Gemini 3.1 Pro | 100 | 100 | 100 | 100 |
-| 9 | B | xAI | Grok 4.7 | 97 | 98 | 94 | 96 |
-| 10 | B | DeepSeek | DeepSeek R1 | 99 | 97 | 100 | 96 |
-| 11 | B | Mistral AI | Mistral Large 4 | 97 | 98 | 96 | 96 |
-| 12 | C | OpenAI | GPT-6.1 Terra | 84 | 83 | 84 | 84 |
-| 13 | C | Anthropic | Claude Fable 5.1 | 86 | 85 | 86 | 84 |
-| 14 | C | Anthropic | Claude Mythos 5.1 | 84 | 84 | 84 | 83 |
-| 15 | C | Google DeepMind | Gemini 3.8 Flash | 84 | 84 | 82 | 83 |
-| 16 | C | Google DeepMind | Gemini 3.7 Flash | 76 | 76 | 74 | 76 |
-| 17 | C | Meta | Muse Spark | 78 | 74 | 76 | 78 |
-| 18 | C | Meta | Llama 4 Maverick | 72 | 70 | 69 | 72 |
-| 19 | C | xAI | Grok 4.6 | 82 | 82 | 80 | 81 |
-| 20 | C | Mistral AI | Mistral Small 4 | 74 | 74 | 73 | 74 |
-| 21 | D | OpenAI | GPT-6 Luna | 56 | 54 | 54 | 56 |
-| 22 | D | Meta | Llama 4 Scout | 46 | 44 | 44 | 46 |
-| 23 | D | Meta | Llama 3.3 70B Instruct | 51 | 50 | 49 | 52 |
-| 24 | D | xAI | Grok 4.5 | 53 | 52 | 50 | 52 |
-| 25 | D | xAI | Grok 3 | 48 | 47 | 48 | 48 |
-| 26 | D | Mistral AI | Ministral 3 14B | 42 | 42 | 42 | 44 |
-| 27 | D | Mistral AI | Mistral 7B | 26 | 27 | 24 | 28 |
-| 28 | D | DeepSeek | DeepSeek V4.1 Flash | 58 | 58 | 57 | 56 |
-| 29 | D | DeepSeek | DeepSeek V3.2 | 54 | 55 | 54 | 54 |
-| 30 | D | Cohere | Command A+ | 48 | 48 | 44 | 50 |
-| 31 | D | Cohere | Command A | 42 | 42 | 40 | 44 |
-| 32 | D | NVIDIA | Nemotron 3 Ultra | 55 | 56 | 54 | 53 |
-| 33 | D | NVIDIA | Nemotron 3 Super | 48 | 48 | 47 | 46 |
-| 34 | D | NVIDIA | Nemotron 2 Nano | 27 | 28 | 26 | 30 |
+| 1 | A | Especial | Alan Turing — Super Trunfo | 90 | 70 | 99 | 80 |
+| 2 | A | OpenAI | GPT-6 Astra | 92 | 90 | 91 | 90 |
+| 3 | A | Anthropic | Claude Opus 5.5 | 91 | 92 | 89 | 89 |
+| 4 | A | Google DeepMind | Gemini 4 Argon | 91 | 89 | 90 | 92 |
+| 5 | A | DeepSeek | DeepSeek V4-Pro | 89 | 90 | 91 | 88 |
+| 6 | B | OpenAI | GPT-6.1 Sol | 87 | 86 | 86 | 87 |
+| 7 | B | Anthropic | Claude Sonnet 5.5 | 86 | 88 | 83 | 85 |
+| 8 | B | Google DeepMind | Gemini 3.1 Pro | 86 | 84 | 87 | 87 |
+| 9 | B | xAI | Grok 4.7 | 85 | 86 | 80 | 83 |
+| 10 | B | DeepSeek | DeepSeek R1 | 86 | 82 | 89 | 80 |
+| 11 | B | Mistral AI | Mistral Large 4 | 84 | 85 | 83 | 83 |
+| 12 | C | OpenAI | GPT-6.1 Terra | 79 | 77 | 80 | 78 |
+| 13 | C | Anthropic | Claude Fable 5.1 | 80 | 79 | 81 | 76 |
+| 14 | C | Anthropic | Claude Mythos 5.1 | 79 | 78 | 80 | 77 |
+| 15 | C | Google DeepMind | Gemini 3.8 Flash | 79 | 80 | 76 | 78 |
+| 16 | C | Google DeepMind | Gemini 3.7 Flash | 76 | 75 | 73 | 77 |
+| 17 | C | Meta | Muse Spark | 78 | 70 | 75 | 79 |
+| 18 | C | Meta | Llama 4 Maverick | 75 | 73 | 70 | 75 |
+| 19 | C | xAI | Grok 4.6 | 80 | 79 | 74 | 77 |
+| 20 | C | Mistral AI | Mistral Small 4 | 75 | 76 | 73 | 74 |
+| 21 | D | OpenAI | GPT-6 Luna | 68 | 66 | 65 | 69 |
+| 22 | D | Meta | Llama 4 Scout | 65 | 62 | 60 | 65 |
+| 23 | D | Meta | Llama 3.3 70B Instruct | 66 | 65 | 62 | 68 |
+| 24 | D | xAI | Grok 4.5 | 68 | 67 | 62 | 66 |
+| 25 | D | xAI | Grok 3 | 64 | 63 | 64 | 65 |
+| 26 | D | Mistral AI | Ministral 3 14B | 62 | 62 | 60 | 64 |
+| 27 | D | Mistral AI | Mistral 7B | 55 | 57 | 52 | 58 |
+| 28 | D | DeepSeek | DeepSeek V4.1 Flash | 69 | 69 | 68 | 65 |
+| 29 | D | DeepSeek | DeepSeek V3.2 | 67 | 68 | 67 | 65 |
+| 30 | D | Cohere | Command A+ | 66 | 64 | 58 | 68 |
+| 31 | D | Cohere | Command A | 63 | 61 | 57 | 66 |
+| 32 | D | NVIDIA | Nemotron 3 Ultra | 68 | 69 | 66 | 64 |
+| 33 | D | NVIDIA | Nemotron 3 Super | 65 | 66 | 63 | 62 |
+| 34 | D | NVIDIA | Nemotron 2 Nano | 55 | 57 | 52 | 60 |
 
 ## Definição dos atributos
 
@@ -72,10 +72,8 @@ Super Trunfo vence automaticamente cartas das classes B, C e D. Contra uma carta
 
 ## Fonte dos valores
 
-As pontuacoes sao parametros de balanceamento do jogo, nao percentuais de acerto nem resultados oficiais de benchmarks. A calibracao da V1 foi revisada com 2.000 partidas simuladas, preservando a ordem tematica das classes e a carta especial. As pontuacoes de Alan Turing sao simbolicas e tematicas, nao uma comparacao tecnica com LLMs.
+As pontuações são parâmetros de balanceamento do jogo, não percentuais de acerto nem resultados oficiais de benchmarks. As reduções foram feitas para ajustar a força relativa das cartas. As pontuações de Alan Turing são simbólicas e temáticas, não uma comparação técnica com LLMs.
 
 ## Histórico
 
 - **2 de novembro de 2026:** distribuição aprovada atualizada para A=5, B=6, C=9 e D=14. Alan Turing passou explicitamente para A, sem alteração dos seus quatro atributos e sem ser contabilizado como modelo.
-
-- **25 de novembro de 2026:** atributos recalibrados apos benchmark reproduzivel de 2.000 partidas; media ajustada por carta = 78 + 2,5 * (media original - 78), com metade dos desvios originais preservada. Alan Turing permanece em 90/70/99/80 e a composicao A=5, B=6, C=9, D=14 foi mantida.
