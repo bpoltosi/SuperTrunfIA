@@ -7,9 +7,9 @@ void exibirMenu(void)
     puts("\n============================================");
     puts("             SUPERTRUNFIA");
     puts("============================================");
-    puts("[1] Iniciar partida");
-    puts("[2] Regras");
-    puts("[0] Sair");
+    puts("\n[1] Iniciar partida\n");
+    puts("[2] Regras\n");
+    puts("[0] Sair\n");
     printf("Opcao: ");
 }
 void exibirRegras(void)
@@ -38,12 +38,12 @@ void solicitarNomesJogadores(Jogador *jogadores, int quantidade)
 }
 void exibirCarta(Carta carta)
 {
-    printf("%s (%s) | Classe %c%s\n", carta.modelo, carta.empresa,
+    printf("\n%s (%s) | Classe %c%s\n\n", carta.modelo, carta.empresa,
            'A' + carta.classe, carta.super_trunfo ? " | SUPER TRUNFO" : "");
 }
 void exibirAtributos(Carta carta)
 {
-    printf("Raciocinio: %d | Programacao: %d | Matematica: %d | Conhecimento: %d\n",
+    printf("Raciocinio: %d | Programacao: %d | Matematica: %d | Conhecimento: %d\n\n",
            carta.raciocinio, carta.programacao, carta.matematica, carta.conhecimento);
 }
 Atributo solicitarAtributo(void)

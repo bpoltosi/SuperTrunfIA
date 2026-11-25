@@ -1,6 +1,10 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+// Limpa o terminal antes de iniciar uma nova rodada.
+void limparTerminal(void);
+
+
 // limpa caracteres restantes da entrada
 void limparBuffer(void);
 

@@ -17,8 +17,8 @@ static int pausarOuSimular(void)
     for (;;) {
         printf("[ENTER] Proxima rodada | [P] Simular ate o fim: ");
         if (!fgets(linha, sizeof linha, stdin)) return -1;
-        if (linha[0] == 'p' || linha[0] == 'P') return 1;
-        if (linha[0] == '\n' || linha[0] == '\r' || linha[0] == '\0') return 0;
+        if (linha[0] == 'p' || linha[0] == 'P') { limparTerminal(); return 1; }
+        if (linha[0] == '\n' || linha[0] == '\r' || linha[0] == '\0') { limparTerminal(); return 0; }
         puts("Opcao invalida.");
     }
 }
@@ -39,7 +39,7 @@ static void mostrarConfronto(Jogo *jogo, Atributo atributo, int desempate)
 static int executarPartida(Jogo *jogo, int simulacao)
 {
     int paridade, sorteio, seletor;
-    puts("\nSorteio inicial: Jogador 1, escolha 1 (PAR) ou 2 (IMPAR).");
+    printf("\nSorteio inicial: %s, escolha 1 (PAR) ou 2 (IMPAR).\n", jogo->jogadores[0].nome);
     paridade = simulacao ? (rand()%2+1) : lerInteiro(1,2);
     if (paridade < 1 || paridade > 2) return 0;
     sorteio = rand()%10+1;
@@ -51,7 +51,7 @@ static int executarPartida(Jogo *jogo, int simulacao)
         Atributo atributo = simulacao ? atributoAleatorio() : solicitarAtributo();
         if (atributo < RACIOCINIO || atributo >= QUANTIDADE_ATRIBUTOS) return 0;
         int escolha_desempate = seletor;
-        printf("\nRODADA %d | Escolha de %s\n", jogo->rodada_atual, jogo->jogadores[seletor].nome);
+        printf("\n\nRODADA %d | Escolha de %s\n\n", jogo->rodada_atual, jogo->jogadores[seletor].nome);
         mostrarConfronto(jogo, atributo, 0);
         int participantes[2];
         int resultado = determinarEmpatados(jogo,atributo,participantes);

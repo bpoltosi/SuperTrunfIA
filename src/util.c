@@ -4,6 +4,16 @@
 #include <time.h>
 #include "util.h"
 
+void limparTerminal(void)
+{
+#ifdef _WIN32
+    (void)system("cls");
+#else
+    fputs("\033[2J\033[H", stdout);
+    fflush(stdout);
+#endif
+}
+
 void limparBuffer(void)
 {
     int c;
