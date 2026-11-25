@@ -25,6 +25,13 @@ gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_engine.c src
 
 O teste do motor cobre transferencia em vitoria, empate, reutilizacao de cartas de desempate, troca de atributo, empate nos quatro atributos, esgotamento de cartas com vitoria automatica/empate tecnico, IDs duplicados entre zonas, cartas malformadas, flags de desempate invalidos e cinco partidas completas com seeds distintas.
 
+## Testes diretos da interface
+
+Compile e execute a verificacao dos nomes dos dois vencedores possiveis e do encerramento:
+
+    gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_interface.c src\interface.c src\util.c -o tests\test_interface.exe
+    .\tests\test_interface.exe
+
 ## Smoke test automatizado da interface
 
 O script compila o aplicativo, inicia uma partida com a primeira rodada manual, ativa simulacao apos a pausa e verifica nomes dos vencedores, separadores, contagem final dos dois jogadores, ausencia da mensagem redundante, limites de nomes, overflow, tokens numericos incompletos e EOF em menu, nomes, atributo e pausa.
