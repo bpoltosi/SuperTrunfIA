@@ -70,12 +70,13 @@ Quando um jogador possuir todas as 34 cartas, o ciclo é interrompido. A interfa
 
 Nos pontos de pausa da interface, o jogador pode usar:
 
+- **Início obrigatório em modo manual:** toda partida começa com entradas e decisões dos jogadores; não existe inicialização direta em simulação.
 - **Enter:** avançar para a próxima etapa do fluxo normal, mantendo a partida interativa.
-- **P ou p:** ativar o modo de simulação automática, que executa as rodadas restantes até que um jogador vença.
+- **P ou p:** nos pontos de pausa durante a partida, ativar o modo de simulação automática, que automatiza as escolhas de atributo e executa as rodadas restantes até que um jogador vença.
 
 O comando de simulação é uma mudança de ritmo, não uma segunda implementação do jogo. O modo automático deve reutilizar as funções do motor, incluindo comparação, Super Trunfo, empate/desempate, transferência do monte e verificação de vitória. As escolhas de atributo que seriam feitas pelos jogadores são selecionadas automaticamente (aleatoriamente) para fins de simulação.
 
-A tecla P/p não deve simular apenas prints ou resultados fictícios: todas as etapas e mudanças no estado dos jogadores devem ocorrer efetivamente no motor.
+A simulação é uma mudança de ritmo, não uma segunda implementação do jogo. A tecla P/p não deve simular apenas prints ou resultados fictícios: todas as etapas e mudanças no estado dos jogadores devem ocorrer efetivamente no motor.
 
 ## Prints de referência (wireframes)
 
@@ -136,7 +137,7 @@ RESULTADO DA RODADA 1: JOGADOR 1 VENCE
 Cartas do Jogador 1: 19
 Cartas do Jogador 2: 15
 
-[ENTER] Continuar | [P] Simular até o fim
+[ENTER] Continuar manual | [P] Ativar simulação até o fim
 ============================================
 ```
 
