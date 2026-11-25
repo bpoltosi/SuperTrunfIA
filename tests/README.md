@@ -46,3 +46,12 @@ O script compila o aplicativo, inicia uma partida com a primeira rodada manual, 
 AddressSanitizer e UndefinedBehaviorSanitizer não estão disponíveis nos runtimes MinGW instalados neste computador. Tente em ambiente Linux/WSL com GCC ou Clang habilitados para sanitizers.
 
 Os testes base também verificam BOM UTF-8, cabeçalho/schema, aspas e escape de aspas, vírgulas internas, IDs duplicados, linha CSV acima do buffer, campos de texto acima do tamanho das estruturas, arquivo ausente e distribuição atômica com cartas/IDs inválidos. Falhas de CSV emitem diagnóstico em stderr com linha e campo/validação.
+
+
+## Validação adicional das issues UX
+
+- Na pausa de rodada, testar Enter e confirmar que o terminal limpa antes da próxima rodada manual.
+- Em outra partida, testar P/p e confirmar que o terminal limpa antes da mensagem de ativação da simulação.
+- Confirmar que o sorteio inicial exibe o nome cadastrado do Jogador 1.
+- Na simulação automática, observar variação dos atributos escolhidos; o smoke test também verifica variedade.
+- Confirmar espaçamento maior entre blocos e linhas da interface, sem prejudicar prompts.
