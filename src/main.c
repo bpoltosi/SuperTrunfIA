@@ -32,8 +32,22 @@ static int pausarOuSimular(void)
     for (;;) {
         printf("[ENTER] Proxima rodada | [P] Simular ate o fim: ");
         if (!fgets(linha, sizeof linha, stdin)) return -1;
-        if (linha[0] == 'p' || linha[0] == 'P') { limparTerminal(); return 1; }
-        if (linha[0] == '\n' || linha[0] == '\r' || linha[0] == '\0') { limparTerminal(); return 0; }
+        size_t tamanho = strlen(linha);
+        if (tamanho > 0 && linha[tamanho - 1] != '\n' && !feof(stdin)) {
+            int caractere = getchar();
+            if (caractere != '\n' && caractere != EOF) {
+                while (caractere != '\n' && caractere != EOF) caractere = getchar();
+                puts("Entrada muito longa. Tente novamente.");
+                continue;
+            }
+        }
+        if (tamanho > 0 && linha[tamanho - 1] == '\n') linha[tamanho - 1] = '\0';
+        else if (tamanho > 0 && linha[tamanho - 1] == '\r') linha[tamanho - 1] = '\0';
+        if (linha[0] == 'p' || linha[0] == 'P') {
+            if (linha[1] == '\0') { limparTerminal(); return 1; }
+        } else if (linha[0] == '\0') {
+            limparTerminal(); return 0;
+        }
         puts("Opcao invalida.");
     }
 }
@@ -49,6 +63,7 @@ static void mostrarConfronto(Jogo *jogo, Atributo atributo, int desempate)
         printf("\n%s | cartas na mao: %d\n", jogo->jogadores[i].nome, jogo->jogadores[i].quantidade_cartas);
         exibirCarta(carta); exibirAtributos(carta);
         printf("Atributo escolhido: %s = %d\n", nomeAtributo(atributo), obterPontuacao(carta, atributo));
+        if (i == 0) puts("============================================================");
     }
 }
 static int executarPartida(Jogo *jogo, int simulacao)
@@ -75,11 +90,11 @@ static int executarPartida(Jogo *jogo, int simulacao)
         int participantes[2];
         int resultado = determinarEmpatados(jogo,atributo,participantes);
         if (resultado < 1) { exibirErro("Confronto invalido."); return 0; }
-        exibirResultadoRodada(resultado == 1 ? participantes[0] : -1);
+        exibirResultadoRodada(resultado == 1 ? jogo->jogadores[participantes[0]].nome : NULL);
         if (!executarRodada(jogo,atributo)) { exibirErro("Falha ao processar rodada."); return 0; }
         if (resultado == 2) {
             int desempate=1;
-            while (verificarJogadorDesempate(jogo,0) && verificarJogadorDesempate(jogo,1)) {
+            while (verificarFimJogo(jogo) == 0 && verificarJogadorDesempate(jogo,0) && verificarJogadorDesempate(jogo,1)) {
                 printf("\nDesempate %d — escolha de %s\n",
                        desempate++, jogo->jogadores[escolha_desempate].nome);
                 Atributo attr = simulacao ? atributoAleatorio() : solicitarAtributo();
@@ -89,7 +104,7 @@ static int executarPartida(Jogo *jogo, int simulacao)
                 int tieResult = determinarEmpatados(jogo,attr,participantesTie);
                 if (tieResult < 1) { exibirErro("Desempate invalido."); return 0; }
                 if (!executarDesempate(jogo,attr)) { exibirErro("Falha no desempate."); return 0; }
-                exibirResultadoRodada(tieResult == 1 ? participantesTie[0] : -1);
+                exibirResultadoRodada(tieResult == 1 ? jogo->jogadores[participantesTie[0]].nome : NULL);
                 if (tieResult == 1) break;
                 puts("Novo empate: as cartas reveladas sao reutilizadas; escolha outro atributo.");
             }
@@ -109,8 +124,9 @@ static int executarPartida(Jogo *jogo, int simulacao)
         }
     }
     Jogador *vencedor=determinarVencedorJogo(jogo);
-    if (vencedor) exibirResultadoFinal(*vencedor);
-    return vencedor != NULL;
+    if (verificarFimJogo(jogo) == 1)
+        exibirResultadoFinal(vencedor, jogo->jogadores, jogo->quantidade_jogadores);
+    return verificarFimJogo(jogo) == 1;
 }
 int main(void)
 {

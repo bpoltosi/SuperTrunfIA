@@ -42,7 +42,8 @@ void finalizarJogo(Jogo *jogo)
 
 int adicionarCartaDisputa(Jogo *jogo, Carta carta)
 {
-    if (!jogo || !validarCarta(&carta) || jogo->monte_disputa.quantidade < 0 ||
+    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES ||
+        !validarCarta(&carta) || jogo->monte_disputa.quantidade < 0 ||
         jogo->monte_disputa.quantidade >= MAX_CARTAS) return 0;
     for (int i=0; i<jogo->monte_disputa.quantidade; ++i)
         if (jogo->monte_disputa.cartas[i].id==carta.id) return 0;
@@ -52,23 +53,39 @@ int adicionarCartaDisputa(Jogo *jogo, Carta carta)
 
 int entregarMonteDisputa(Jogo *jogo, int vencedor)
 {
-    if (!jogo || vencedor < 0 || vencedor >= jogo->quantidade_jogadores ||
+    int ids[MAX_CARTAS], quantidade_ids = 0;
+    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES ||
+        vencedor < 0 || vencedor >= MAX_JOGADORES ||
         jogo->jogadores[vencedor].quantidade_cartas < 0 ||
         jogo->jogadores[vencedor].quantidade_cartas > MAX_CARTAS ||
+        jogo->jogadores[1 - vencedor].quantidade_cartas < 0 ||
+        jogo->jogadores[1 - vencedor].quantidade_cartas > MAX_CARTAS ||
         jogo->monte_disputa.quantidade < 0 ||
         jogo->monte_disputa.quantidade > MAX_CARTAS ||
+        jogo->jogadores[0].quantidade_cartas + jogo->jogadores[1].quantidade_cartas +
+            jogo->monte_disputa.quantidade != MAX_CARTAS ||
         jogo->jogadores[vencedor].quantidade_cartas + jogo->monte_disputa.quantidade > MAX_CARTAS)
         return 0;
+
+    /* Valida todas as zonas antes de qualquer embaralhamento ou transferencia. */
+    for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
+        for (int i = 0; i < jogo->jogadores[jogador].quantidade_cartas; ++i) {
+            Carta *carta = &jogo->jogadores[jogador].cartas[i];
+            if (!validarCarta(carta)) return 0;
+            for (int k = 0; k < quantidade_ids; ++k)
+                if (ids[k] == carta->id) return 0;
+            ids[quantidade_ids++] = carta->id;
+        }
+    }
+    for (int i = 0; i < jogo->monte_disputa.quantidade; ++i) {
+        Carta *carta = &jogo->monte_disputa.cartas[i];
+        if (!validarCarta(carta)) return 0;
+        for (int k = 0; k < quantidade_ids; ++k)
+            if (ids[k] == carta->id) return 0;
+        ids[quantidade_ids++] = carta->id;
+    }
+
     Jogador *j = &jogo->jogadores[vencedor];
-    for (int i=0; i<j->quantidade_cartas; ++i) {
-        if (!validarCarta(&j->cartas[i])) return 0;
-        for (int k=0; k<i; ++k) if (j->cartas[i].id==j->cartas[k].id) return 0;
-    }
-    for (int i=0; i<jogo->monte_disputa.quantidade; ++i) {
-        if (!validarCarta(&jogo->monte_disputa.cartas[i])) return 0;
-        for (int k=0; k<i; ++k) if (jogo->monte_disputa.cartas[i].id==jogo->monte_disputa.cartas[k].id) return 0;
-        for (int k=0; k<j->quantidade_cartas; ++k) if (jogo->monte_disputa.cartas[i].id==j->cartas[k].id) return 0;
-    }
     int base = j->quantidade_cartas;
     /* Ordem do monte de disputa aleatorizada para evitar ciclos deterministas. */
     for (int i = jogo->monte_disputa.quantidade - 1; i > 0; --i) {
@@ -91,16 +108,20 @@ void limparMonteDisputa(Jogo *jogo)
 
 int obterCartaConfronto(Jogo *jogo, int indice_jogador, Carta *carta, int *adicionar_ao_monte)
 {
-    if (!jogo || !carta || !adicionar_ao_monte || indice_jogador < 0 ||
-        indice_jogador >= jogo->quantidade_jogadores) return 0;
+    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES ||
+        !carta || !adicionar_ao_monte || indice_jogador < 0 ||
+        indice_jogador >= MAX_JOGADORES) return 0;
     EstadoDesempate *estado = &jogo->estados[indice_jogador];
     Jogador *j = &jogo->jogadores[indice_jogador];
-    if (estado->tem_carta_reutilizada) {
+    if ((estado->tem_carta_reutilizada != 0 && estado->tem_carta_reutilizada != 1) ||
+        j->quantidade_cartas <= 0 || j->quantidade_cartas > MAX_CARTAS) return 0;
+    if (estado->tem_carta_reutilizada == 1) {
+        if (!validarCarta(&estado->carta_reutilizada) ||
+            estado->carta_reutilizada.id != j->cartas[0].id) return 0;
         *carta = estado->carta_reutilizada;
         *adicionar_ao_monte = 0;
         return 1;
     }
-    if (j->quantidade_cartas <= 0 || j->quantidade_cartas > MAX_CARTAS) return 0;
     *carta = j->cartas[0];
     *adicionar_ao_monte = 1;
     return 1;
@@ -108,7 +129,8 @@ int obterCartaConfronto(Jogo *jogo, int indice_jogador, Carta *carta, int *adici
 
 int determinarEmpatados(Jogo *jogo, Atributo atributo, int *empatados)
 {
-    if (!jogo || !empatados || !jogo->jogo_ativo || !atributoValido(atributo)) return -1;
+    if (!jogo || !empatados || !jogo->jogo_ativo || !atributoValido(atributo) ||
+        verificarFimJogo(jogo) != 0) return -1;
     Carta cartas[2];
     for (int i = 0; i < 2; ++i)
         if (!obterCartaConfronto(jogo, i, &cartas[i], &(int){0})) return -1;
@@ -121,24 +143,29 @@ int determinarEmpatados(Jogo *jogo, Atributo atributo, int *empatados)
 
 void atualizarParticipantesDesempate(Jogo *jogo, int *empatados, int quantidade_empatados)
 {
-    if (!jogo || !empatados || quantidade_empatados < 1 || quantidade_empatados > 2) return;
+    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES || !empatados ||
+        quantidade_empatados < 1 || quantidade_empatados > MAX_JOGADORES) return;
     int novos[2] = {0,0};
-    for (int i = 0; i < quantidade_empatados; ++i)
-        if (empatados[i] >= 0 && empatados[i] < 2) novos[empatados[i]] = 1;
-    if (!novos[0] && !novos[1]) return;
+    for (int i = 0; i < quantidade_empatados; ++i) {
+        if (empatados[i] < 0 || empatados[i] >= MAX_JOGADORES || novos[empatados[i]])
+            return;
+        novos[empatados[i]] = 1;
+    }
     for (int i = 0; i < 2; ++i) jogo->estados[i].participa_desempate = novos[i];
 }
 
 int verificarJogadorDesempate(Jogo *jogo, int indice_jogador)
 {
-    if (!jogo || indice_jogador < 0 || indice_jogador >= 2) return 0;
-    return jogo->estados[indice_jogador].participa_desempate != 0;
+    if (!jogo || !jogo->jogo_ativo || jogo->quantidade_jogadores != MAX_JOGADORES ||
+        indice_jogador < 0 || indice_jogador >= MAX_JOGADORES) return 0;
+    return jogo->estados[indice_jogador].participa_desempate == 1;
 }
 
 int executarRodada(Jogo *jogo, Atributo atributo)
 {
     if (!jogo || !jogo->jogo_ativo || !atributoValido(atributo) ||
-        jogo->quantidade_jogadores != 2 || jogo->monte_disputa.quantidade != 0 ||
+        jogo->quantidade_jogadores != MAX_JOGADORES || verificarFimJogo(jogo) != 0 ||
+        jogo->monte_disputa.quantidade != 0 ||
         jogo->jogadores[0].quantidade_cartas <= 0 || jogo->jogadores[1].quantidade_cartas <= 0)
         return 0;
     Carta cartas[2];
@@ -160,17 +187,29 @@ int executarRodada(Jogo *jogo, Atributo atributo)
     }
     int empatados[2] = {0,1};
     atualizarParticipantesDesempate(jogo, empatados, 2);
+
+    /* If one player cannot reveal another card, the opponent receives the pile. */
+    if ((jogo->jogadores[0].quantidade_cartas == 0) !=
+        (jogo->jogadores[1].quantidade_cartas == 0)) {
+        int vencedor_desempate = jogo->jogadores[0].quantidade_cartas == 0 ? 1 : 0;
+        jogo->jogador_atual = vencedor_desempate;
+        memset(jogo->estados, 0, sizeof jogo->estados);
+        return entregarMonteDisputa(jogo, vencedor_desempate);
+    }
     return 1;
 }
 
 int executarDesempate(Jogo *jogo, Atributo atributo)
 {
     if (!jogo || !jogo->jogo_ativo || !atributoValido(atributo) ||
+        verificarFimJogo(jogo) != 0 ||
         !verificarJogadorDesempate(jogo, 0) || !verificarJogadorDesempate(jogo, 1) ||
-        jogo->monte_disputa.quantidade <= 0) return 0;
+        jogo->monte_disputa.quantidade <= 0 ||
+        jogo->monte_disputa.quantidade > MAX_CARTAS - 2) return 0;
     Carta cartas[2]; int add[2];
     for (int i = 0; i < 2; ++i)
         if (!obterCartaConfronto(jogo, i, &cartas[i], &add[i])) return 0;
+    if (cartas[0].id == cartas[1].id) return 0;
     int resultado = compararCartasComSuperTrunfo(cartas[0], cartas[1], atributo);
     if (resultado == -2) return 0;
     if (resultado == 0) {
@@ -191,6 +230,13 @@ int executarDesempate(Jogo *jogo, Atributo atributo)
                 memset(&jogo->estados[i].carta_reutilizada, 0, sizeof(Carta));
                 jogo->estados[i].atributos_tentados = 0;
             }
+            if ((jogo->jogadores[0].quantidade_cartas == 0) !=
+                (jogo->jogadores[1].quantidade_cartas == 0)) {
+                int vencedor_desempate = jogo->jogadores[0].quantidade_cartas == 0 ? 1 : 0;
+                jogo->jogador_atual = vencedor_desempate;
+                memset(jogo->estados, 0, sizeof jogo->estados);
+                return entregarMonteDisputa(jogo, vencedor_desempate);
+            }
         }
         return 1;
     }
@@ -206,15 +252,60 @@ int executarDesempate(Jogo *jogo, Atributo atributo)
 
 int verificarFimJogo(Jogo *jogo)
 {
-    if (!jogo || jogo->quantidade_jogadores != 2 ||
+    int ids[MAX_CARTAS], quantidade_ids = 0;
+
+    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES ||
+        (jogo->jogo_ativo != 0 && jogo->jogo_ativo != 1) ||
         jogo->jogadores[0].quantidade_cartas < 0 || jogo->jogadores[0].quantidade_cartas > MAX_CARTAS ||
         jogo->jogadores[1].quantidade_cartas < 0 || jogo->jogadores[1].quantidade_cartas > MAX_CARTAS ||
         jogo->monte_disputa.quantidade < 0 || jogo->monte_disputa.quantidade > MAX_CARTAS ||
         jogo->jogadores[0].quantidade_cartas + jogo->jogadores[1].quantidade_cartas +
             jogo->monte_disputa.quantidade != MAX_CARTAS) return -1;
+
+    /* Desempate flags and cached cards must match the current hand tops. */
+    for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
+        EstadoDesempate *estado = &jogo->estados[jogador];
+        if ((estado->participa_desempate != 0 && estado->participa_desempate != 1) ||
+            (estado->tem_carta_reutilizada != 0 && estado->tem_carta_reutilizada != 1) ||
+            estado->atributos_tentados < 0 ||
+            estado->atributos_tentados >= (1 << QUANTIDADE_ATRIBUTOS)) return -1;
+        if (estado->tem_carta_reutilizada) {
+            if (!estado->participa_desempate || estado->atributos_tentados == 0 ||
+                jogo->jogadores[jogador].quantidade_cartas <= 0 ||
+                !validarCarta(&estado->carta_reutilizada) ||
+                estado->carta_reutilizada.id != jogo->jogadores[jogador].cartas[0].id)
+                return -1;
+        } else if (estado->atributos_tentados != 0) {
+            return -1;
+        }
+    }
+
+    /* Every card must exist in exactly one zone in a stable state. */
+    for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
+        for (int i = 0; i < jogo->jogadores[jogador].quantidade_cartas; ++i) {
+            Carta *carta = &jogo->jogadores[jogador].cartas[i];
+            if (!validarCarta(carta)) return -1;
+            for (int j = 0; j < quantidade_ids; ++j)
+                if (ids[j] == carta->id) return -1;
+            ids[quantidade_ids++] = carta->id;
+        }
+    }
+    for (int i = 0; i < jogo->monte_disputa.quantidade; ++i) {
+        Carta *carta = &jogo->monte_disputa.cartas[i];
+        if (!validarCarta(carta)) return -1;
+        for (int j = 0; j < quantidade_ids; ++j)
+            if (ids[j] == carta->id) return -1;
+        ids[quantidade_ids++] = carta->id;
+    }
+    if (quantidade_ids != MAX_CARTAS) return -1;
+
     if (jogo->jogadores[0].quantidade_cartas == MAX_CARTAS ||
-        jogo->jogadores[1].quantidade_cartas == MAX_CARTAS) {
-        jogo->jogo_ativo = 0; return 1;
+        jogo->jogadores[1].quantidade_cartas == MAX_CARTAS ||
+        (jogo->jogadores[0].quantidade_cartas == 0 &&
+         jogo->jogadores[1].quantidade_cartas == 0 &&
+         jogo->monte_disputa.quantidade == MAX_CARTAS)) {
+        jogo->jogo_ativo = 0;
+        return 1;
     }
     return 0;
 }

@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <string.h>
 #include "carta.h"
 
 int obterPontuacao(Carta carta, Atributo atributo)
@@ -61,6 +62,9 @@ ClasseCarta obterClasseCarta(const Carta *carta)
 int validarCarta(const Carta *carta)
 {
     if (carta == NULL || carta->id <= 0 ||
+        !memchr(carta->empresa, '\0', sizeof carta->empresa) ||
+        !memchr(carta->modelo, '\0', sizeof carta->modelo) ||
+        !memchr(carta->caracteristicas, '\0', sizeof carta->caracteristicas) ||
         carta->empresa[0] == '\0' || carta->modelo[0] == '\0' ||
         carta->caracteristicas[0] == '\0' ||
         carta->classe < CLASSE_A || carta->classe > CLASSE_D ||

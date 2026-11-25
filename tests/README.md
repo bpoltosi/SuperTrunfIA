@@ -23,11 +23,18 @@ gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_engine.c src
 .\tests\test_engine.exe
 ```
 
-O teste do motor cobre transferência em vitória, empate, reutilização de cartas de desempate, troca de atributo e empate em todos os quatro atributos (as cartas empatadas são recolhidas uma única vez e o desempate avança para novas cartas), além de cinco partidas completas com seeds distintas.
+O teste do motor cobre transferencia em vitoria, empate, reutilizacao de cartas de desempate, troca de atributo, empate nos quatro atributos, esgotamento de cartas com vitoria automatica/empate tecnico, IDs duplicados entre zonas, cartas malformadas, flags de desempate invalidos e cinco partidas completas com seeds distintas.
+
+## Testes diretos da interface
+
+Compile e execute a verificacao dos nomes dos dois vencedores possiveis e do encerramento:
+
+    gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_interface.c src\interface.c src\util.c -o tests\test_interface.exe
+    .\tests\test_interface.exe
 
 ## Smoke test automatizado da interface
 
-O script compila o aplicativo, inicia uma partida com a primeira rodada manual, ativa simulação após a pausa e verifica saída do campeão com 34 cartas e retorno ao menu:
+O script compila o aplicativo, inicia uma partida com a primeira rodada manual, ativa simulacao apos a pausa e verifica nomes dos vencedores, separadores, contagem final dos dois jogadores, ausencia da mensagem redundante, limites de nomes, overflow, tokens numericos incompletos e EOF em menu, nomes, atributo e pausa.
 
 ```powershell
 .\tests\smoke.ps1
@@ -43,7 +50,15 @@ O script compila o aplicativo, inicia uma partida com a primeira rodada manual, 
 
 ## Sanitizers
 
-AddressSanitizer e UndefinedBehaviorSanitizer não estão disponíveis nos runtimes MinGW instalados neste computador. Tente em ambiente Linux/WSL com GCC ou Clang habilitados para sanitizers.
+AddressSanitizer e UndefinedBehaviorSanitizer nao estao disponiveis nos runtimes MinGW instalados neste computador. A tentativa com Clang tambem nao pode iniciar porque o runtime ASan/UBSan nao esta instalado. A limitacao foi registrada; executar esses sanitizers em ambiente Linux/WSL com GCC ou Clang habilitados e uma validacao complementar pendente.
+
+## Analise estatica
+
+Em 25/11/2026, os arquivos de producao e os testes foram analisados sem diagnosticos por:
+- GCC -fanalyzer, compilando cada unidade C com -Wall -Wextra -Wpedantic -Werror.
+- Clang Static Analyzer (clang --analyze) sobre fontes e testes.
+
+Os testes funcionais, smoke tests e benchmarks foram executados separadamente. A analise estatica nao substitui ASan/UBSan.
 
 Os testes base também verificam BOM UTF-8, cabeçalho/schema, aspas e escape de aspas, vírgulas internas, IDs duplicados, linha CSV acima do buffer, campos de texto acima do tamanho das estruturas, arquivo ausente e distribuição atômica com cartas/IDs inválidos. Falhas de CSV emitem diagnóstico em stderr com linha e campo/validação.
 

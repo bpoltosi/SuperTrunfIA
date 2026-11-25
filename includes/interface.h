@@ -25,10 +25,10 @@ void exibirAtributos(Carta carta);
 Atributo solicitarAtributo(void);
 
 // exibe o resultado da rodada
-void exibirResultadoRodada(int vencedor);
+void exibirResultadoRodada(const char *nome_vencedor);
 
 // exibe o resultado final
-void exibirResultadoFinal(Jogador jogador);
+void exibirResultadoFinal(const Jogador *vencedor, const Jogador jogadores[], int quantidade);
 
 // exibe mensagens de erro
 void exibirErro(const char *mensagem);
