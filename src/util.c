@@ -41,6 +41,13 @@ void lerString(char *destino, int tamanho)
     else limparBuffer();
 }
 
+int determinarVencedorSorteio(int escolha, int resultado)
+{
+    if ((escolha != 1 && escolha != 2) || (resultado != 1 && resultado != 2))
+        return -1;
+    return escolha == resultado ? 0 : 1;
+}
+
 void inicializarAleatorio(void)
 {
     srand((unsigned)time(NULL));
