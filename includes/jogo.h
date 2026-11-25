@@ -9,6 +9,7 @@ typedef struct {
     int participa_desempate;
     int tem_carta_reutilizada;
     Carta carta_reutilizada;
+    int atributos_tentados; /* máscara: atributos já testados neste ciclo de desempate */
 } EstadoDesempate;
 typedef struct {
     Jogador jogadores[MAX_JOGADORES];

@@ -164,3 +164,7 @@ Os nomes abaixo são propostas para organizar a implementação; os contratos fi
 | `exibirFimJogo()` | Apresentar campeão e resultado final |
 
 As funções listadas são diretrizes de interface. A implementação poderá ajustar nomes e assinaturas para respeitar os headers e a arquitetura existente, sem alterar as regras aqui definidas.
+
+## Implementação concluída — comportamento da primeira rodada
+
+A primeira rodada é obrigatoriamente manual: o usuário participa do sorteio par/ímpar e escolhe o atributo. A opção P/p de simulação é oferecida apenas na pausa após a resolução dessa primeira rodada, garantindo que a partida não comece em modo automático. Se ativada, a simulação segue até o fim pelo mesmo motor de jogo.

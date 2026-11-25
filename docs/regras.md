@@ -76,3 +76,15 @@ Os cabeçalhos em includes/ são a referência normativa dos contratos das funç
 - A separação entre lógica do jogo e impressão deve ser preservada: apresentação e entrada de terminal ficam encapsuladas no módulo de interface, evitando prints espalhados no motor.
 
 A especificação de etapas, prints e comportamento de entrada está detalhada em [interface-terminal-v1.md](interface-terminal-v1.md).
+
+## Implementação da V1 — detalhes operacionais
+
+- As cartas de cada rodada principal são removidas das mãos e adicionadas uma vez ao monte de disputa, inclusive quando há empate.
+- Durante o desempate, a carta revelada permanece temporariamente na mão e é reutilizada em novos empates; só é recolhida ao monte quando o desempate é resolvido.
+- Se os quatro atributos forem testados e continuarem empatados, o par de cartas reutilizadas é recolhido uma vez ao monte e novas cartas são reveladas para continuar o desempate, evitando bloqueio infinito.
+- Antes de entregar o monte ao vencedor, sua ordem é embaralhada. Isso evita ciclos determinísticos na sequência de cartas; a transferência continua integral e conserva todas as 34 cartas.
+- O modo automático usa o mesmo motor que o manual e escolhe atributos aleatoriamente. A primeira rodada exige entrada manual; a simulação só pode ser ativada na pausa depois dela.
+
+## Validação do arquivo de cartas
+
+O loader exige o cabeçalho e a ordem de campos documentados. Aceita BOM UTF-8 inicial, CRLF/LF, campos entre aspas, vírgulas dentro de campos e aspas escapadas (`""`). Rejeita cabeçalho/schema divergente, linhas vazias, linhas acima do buffer, campos acima dos limites das estruturas, valores inválidos, IDs repetidos, contagem e composição incorretas. A carga usa array temporário estático e só publica o baralho completo quando todas as validações passam. Erros são reportados em stderr com linha e validação/campo.

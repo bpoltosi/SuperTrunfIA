@@ -1,58 +1,58 @@
 # SuperTrunfIA
 
-Projeto acadêmico de um jogo inspirado em **Super Trunfo**, com cartas temáticas de modelos de inteligência artificial. O repositório reúne a modelagem das cartas, as regras do jogo, os contratos das funções e uma implementação modular em C em desenvolvimento.
+Jogo de Super Trunfo em C com cartas temáticas de modelos de inteligência artificial. A V1 (Core) é um jogo de terminal para dois jogadores, com dados carregados de CSV e sem alocação dinâmica de memória.
 
-## Tema e cartas
+## Cartas e regras
 
-O baralho definido no projeto contém **34 cartas**: 33 modelos de IA e uma carta especial, Alan Turing. Cada carta possui quatro atributos:
+O baralho possui 34 cartas (33 modelos e Alan Turing como Super Trunfo), quatro atributos de 0 a 100 e classes A, B, C e D. As pontuações são parâmetros de balanceamento do jogo, não benchmarks oficiais.
 
-- Raciocínio
-- Programação
-- Matemática
-- Conhecimento
+- [Lista e dados de cartas](docs/lista-cartas.md) / [CSV](data/cartas.csv)
+- [Regras completas](docs/regras.md)
+- [Contratos das funções](docs/contratos-funcoes.md)
+- [Interface terminal V1](docs/interface-terminal-v1.md)
+- [Roadmap V1/V2](docs/planejamento-versoes.md)
 
-As cartas são organizadas nas classes A, B, C e D. Alan Turing representa a carta especial Super Trunfo e possui regras próprias de comparação.
+## Requisitos
 
-> **Importante:** as pontuações são parâmetros fictícios de balanceamento do jogo. Não representam benchmarks oficiais, avaliações técnicas verificadas ou rankings de modelos.
+- GCC (MinGW no Windows) ou Clang
+- Terminal/PowerShell
+- Nenhuma biblioteca externa
 
-Consulte [docs/lista-cartas.md](docs/lista-cartas.md) para a composição do baralho e [data/cartas.csv](data/cartas.csv) para os dados utilizados pelo projeto.
+## Compilar e executar
 
-## Regras documentadas
+Execute na raiz do repositório:
 
-As regras atuais especificam:
+```powershell
+gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes src\*.c -o build.exe
+.\build.exe
+```
 
-- Comparação dos atributos escolhidos.
-- Regra especial da carta Super Trunfo em relação às classes.
-- Distribuição do baralho entre dois jogadores.
-- Tratamento de empates e acúmulo de cartas no monte de disputa.
-- Rodadas de desempate e reutilização das cartas reveladas.
-- Condições de encerramento e definição do vencedor.
+Menu: 1 inicia uma partida, 2 mostra as regras, 0 encerra. A primeira rodada é manual; depois da primeira rodada, Enter continua manual e P/p ativa simulação até a partida terminar.
 
-A especificação completa está em [docs/regras.md](docs/regras.md). Os contratos de retorno e comportamento das funções estão em [docs/contratos-funcoes.md](docs/contratos-funcoes.md) e nos cabeçalhos de `includes/`.
+## Testes
 
-## Organização do repositório
+Os comandos de testes e o checklist manual estão em [tests/README.md](tests/README.md). Há testes automatizados para cartas, jogadores, CSV, desempates, transferência e cinco partidas simuladas completas.
 
-| Diretório/arquivo | Responsabilidade |
-|---|---|
-| `includes/` | Cabeçalhos e contratos das estruturas e funções |
-| `src/` | Implementação modular em C: cartas, baralho, jogadores, jogo, interface e utilitários |
-| `data/cartas.csv` | Baralho carregado pelo programa |
-| `docs/` | Regras, contratos, lista de cartas, enunciado acadêmico e planejamento de versões |
+```powershell
+gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_phase1.c src\carta.c src\jogador.c src\baralho.c -o tests\test_phase1.exe
+.\tests\test_phase1.exe
 
-## Tecnologias
+gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes tests\test_engine.c src\jogo.c src\carta.c src\jogador.c src\baralho.c src\interface.c src\util.c -o tests\test_engine.exe
+.\tests\test_engine.exe
+```
 
-- Linguagem C.
-- Arquivos CSV para os dados das cartas.
-- Git e GitHub para versionamento e documentação.
+## Estrutura
 
-## Estado atual
+- `includes/`: tipos, contratos e cabeçalhos
+- `src/`: cartas, jogadores, baralho, motor, interface e utilitários
+- `data/`: CSV de cartas
+- `tests/`: testes automatizados e instruções
+- `docs/`: regras, arquitetura e planejamento
 
-O projeto está **em desenvolvimento**. A modelagem das cartas, os dados do baralho, as regras e os contratos das funções estão documentados, e há módulos C iniciados para implementar essas responsabilidades.
+## Estado
 
-A inicialização em `src/main.c` ainda contém etapas em aberto (menu, configuração dos jogadores, execução das rodadas e apresentação do resultado). Portanto, **o jogo completo ainda não deve ser considerado executável ou validado de ponta a ponta**. Os contratos em `includes/` e `docs/contratos-funcoes.md` orientam a implementação dos módulos.
+V1 Core está implementada: menu, entrada dos nomes, sorteio inicial, primeira rodada manual, modo de simulação opcional, rodadas, desempates, monte de disputa, transferência, condição de vitória e limpeza de estado. Testes automatizados e compilação estrita devem ser executados antes de considerar a versão release. Sanitizers dependem de runtimes compatíveis instalados.
 
-## Planejamento
+## Versionamento
 
-O roadmap separa a entrega do núcleo acadêmico em C (V1) de uma possível expansão futura com interface visual e integrações (V2). A V2 é uma proposta, não uma funcionalidade existente.
-
-Consulte [docs/planejamento-versoes.md](docs/planejamento-versoes.md) para o escopo e a ordem planejada de evolução.
+Desenvolvimento da V1 ocorre em branch de trabalho; não fazer commits diretos na `main`. A V2 Visual & Integration é futura e só deve começar após estabilizar e validar a V1.

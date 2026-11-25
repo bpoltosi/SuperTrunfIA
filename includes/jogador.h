@@ -3,6 +3,7 @@
 #include "carta.h"
 #define MAX_JOGADORES 2
 
+/* Topo da mão é índice 0; adicionarCarta coloca cartas no fim. */
 typedef struct {
     int id;
     char nome[50];

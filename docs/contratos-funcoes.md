@@ -54,3 +54,14 @@ Os cabeçalhos em includes/ são a referência normativa dos contratos públicos
 | determinarVencedorJogo | Ponteiro do vencedor ou NULL. |
 
 Funções do motor ainda não implementadas devem respeitar esses contratos ao serem concluídas. Um stub não deve sinalizar sucesso fictício.
+
+## Complementos do motor implementado
+
+- `executarRodada`: compara as cartas do topo, recolhe ambas ao monte de disputa, remove-as das mãos e, se houver vencedor, transfere o monte. Se empatar, registra os dois participantes e deixa a disputa para `executarDesempate`.
+- `executarDesempate`: reutiliza cartas enquanto houver empate. Depois de tentar todos os quatro atributos sem resolução, recolhe esse par uma única vez e revela um novo par.
+- `verificarFimJogo`: valida a conservação das cartas considerando mãos e monte de disputa, e reconhece vencedor quando uma mão contém as 34 cartas.
+- `entregarMonteDisputa`: embaralha a ordem do monte antes da transferência integral ao vencedor.
+
+## Loader e distribuição — garantias de validação
+
+`carregarBaralhoCSV` valida cabeçalho/schema, encoding BOM inicial, CSV delimitado/aspas/escape, tamanho da linha e dos campos, conversões numéricas completas, IDs únicos e composição. O destino fica com quantidade zero em falha e recebe o array temporário apenas no sucesso. `distribuirCartas` valida cartas e IDs duplicados antes de mutar; prepara cópias dos jogadores e publica ambas as mãos (17/17) somente após sucesso, consumindo o baralho no final.
