@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "carta.h"
 
 int obterPontuacao(Carta carta, Atributo atributo)

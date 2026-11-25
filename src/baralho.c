@@ -65,6 +65,7 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
     char linha[TAMANHO_LINHA_CSV];
     char campos[QUANTIDADE_CAMPOS_CSV][TAMANHO_CAMPO_CSV];
     int primeira_linha = 1, quantidade_super_trunfo = 0;
+    int quantidade_classes[4] = {0};
 
     if (baralho == NULL || caminho == NULL) return 0;
     baralho->quantidade = 0;
@@ -106,11 +107,14 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
             }
         }
         if (carta.super_trunfo) quantidade_super_trunfo++;
+        quantidade_classes[carta.classe]++;
         baralho->cartas[baralho->quantidade++] = carta;
     }
 
     fclose(arquivo);
-    if (baralho->quantidade != MAX_CARTAS || quantidade_super_trunfo != 1) {
+    if (baralho->quantidade != MAX_CARTAS || quantidade_super_trunfo != 1 ||
+        quantidade_classes[CLASSE_A] != 5 || quantidade_classes[CLASSE_B] != 6 ||
+        quantidade_classes[CLASSE_C] != 9 || quantidade_classes[CLASSE_D] != 14) {
         baralho->quantidade = 0;
         return 0;
     }
