@@ -10,7 +10,7 @@ static int atributoValido(Atributo atributo)
 }
 
 /*
- * Garante que as duas maos e o monte contenham exatamente as 34 cartas
+ * Garante que as duas maos e o monte contenham exatamente as 24 cartas
  * validas, sem IDs repetidos entre quaisquer zonas.
  */
 static int validarIntegridadeZonas(const Jogo *jogo)
