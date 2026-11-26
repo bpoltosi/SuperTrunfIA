@@ -9,6 +9,63 @@ static int atributoValido(Atributo atributo)
     return atributo >= RACIOCINIO && atributo < QUANTIDADE_ATRIBUTOS;
 }
 
+/*
+ * Garante que as duas maos e o monte contenham exatamente as 34 cartas
+ * validas, sem IDs repetidos entre quaisquer zonas.
+ */
+static int validarIntegridadeZonas(const Jogo *jogo)
+{
+    int ids[MAX_CARTAS];
+    int quantidadeIds = 0;
+
+    if (!jogo ||
+        jogo->quantidade_jogadores != MAX_JOGADORES ||
+        jogo->jogadores[0].quantidade_cartas < 0 ||
+        jogo->jogadores[0].quantidade_cartas > MAX_CARTAS ||
+        jogo->jogadores[1].quantidade_cartas < 0 ||
+        jogo->jogadores[1].quantidade_cartas > MAX_CARTAS ||
+        jogo->monte_disputa.quantidade < 0 ||
+        jogo->monte_disputa.quantidade > MAX_CARTAS ||
+        jogo->jogadores[0].quantidade_cartas +
+            jogo->jogadores[1].quantidade_cartas +
+            jogo->monte_disputa.quantidade != MAX_CARTAS)
+        return 0;
+
+    for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
+        const Jogador *mao = &jogo->jogadores[jogador];
+
+        for (int i = 0; i < mao->quantidade_cartas; ++i) {
+            const Carta *carta = &mao->cartas[i];
+
+            if (!validarCarta(carta))
+                return 0;
+
+            for (int j = 0; j < quantidadeIds; ++j) {
+                if (ids[j] == carta->id)
+                    return 0;
+            }
+
+            ids[quantidadeIds++] = carta->id;
+        }
+    }
+
+    for (int i = 0; i < jogo->monte_disputa.quantidade; ++i) {
+        const Carta *carta = &jogo->monte_disputa.cartas[i];
+
+        if (!validarCarta(carta))
+            return 0;
+
+        for (int j = 0; j < quantidadeIds; ++j) {
+            if (ids[j] == carta->id)
+                return 0;
+        }
+
+        ids[quantidadeIds++] = carta->id;
+    }
+
+    return quantidadeIds == MAX_CARTAS;
+}
+
 int inicializarJogo(Jogo *jogo, int quantidade_jogadores)
 {
     if (!jogo || quantidade_jogadores != MAX_JOGADORES) return 0;
@@ -53,38 +110,13 @@ int adicionarCartaDisputa(Jogo *jogo, Carta carta)
 
 int entregarMonteDisputa(Jogo *jogo, int vencedor)
 {
-    int ids[MAX_CARTAS], quantidade_ids = 0;
-    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES ||
-        vencedor < 0 || vencedor >= MAX_JOGADORES ||
-        jogo->jogadores[vencedor].quantidade_cartas < 0 ||
-        jogo->jogadores[vencedor].quantidade_cartas > MAX_CARTAS ||
-        jogo->jogadores[1 - vencedor].quantidade_cartas < 0 ||
-        jogo->jogadores[1 - vencedor].quantidade_cartas > MAX_CARTAS ||
-        jogo->monte_disputa.quantidade < 0 ||
-        jogo->monte_disputa.quantidade > MAX_CARTAS ||
-        jogo->jogadores[0].quantidade_cartas + jogo->jogadores[1].quantidade_cartas +
-            jogo->monte_disputa.quantidade != MAX_CARTAS ||
-        jogo->jogadores[vencedor].quantidade_cartas + jogo->monte_disputa.quantidade > MAX_CARTAS)
+    if (!jogo || vencedor < 0 || vencedor >= MAX_JOGADORES ||
+        !validarIntegridadeZonas(jogo) ||
+        jogo->jogadores[vencedor].quantidade_cartas +
+            jogo->monte_disputa.quantidade > MAX_CARTAS)
         return 0;
 
-    /* Valida todas as zonas antes de qualquer embaralhamento ou transferencia. */
-    for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
-        for (int i = 0; i < jogo->jogadores[jogador].quantidade_cartas; ++i) {
-            Carta *carta = &jogo->jogadores[jogador].cartas[i];
-            if (!validarCarta(carta)) return 0;
-            for (int k = 0; k < quantidade_ids; ++k)
-                if (ids[k] == carta->id) return 0;
-            ids[quantidade_ids++] = carta->id;
-        }
-    }
-    for (int i = 0; i < jogo->monte_disputa.quantidade; ++i) {
-        Carta *carta = &jogo->monte_disputa.cartas[i];
-        if (!validarCarta(carta)) return 0;
-        for (int k = 0; k < quantidade_ids; ++k)
-            if (ids[k] == carta->id) return 0;
-        ids[quantidade_ids++] = carta->id;
-    }
-
+    /* A integridade de todas as zonas e validada antes da primeira mutacao. */
     Jogador *j = &jogo->jogadores[vencedor];
     int base = j->quantidade_cartas;
     /* Ordem do monte de disputa aleatorizada para evitar ciclos deterministas. */
@@ -132,8 +164,11 @@ int determinarEmpatados(Jogo *jogo, Atributo atributo, int *empatados)
     if (!jogo || !empatados || !jogo->jogo_ativo || !atributoValido(atributo) ||
         verificarFimJogo(jogo) != 0) return -1;
     Carta cartas[2];
-    for (int i = 0; i < 2; ++i)
-        if (!obterCartaConfronto(jogo, i, &cartas[i], &(int){0})) return -1;
+    int ignorarAdicaoAoMonte;
+    for (int i = 0; i < 2; ++i) {
+        if (!obterCartaConfronto(jogo, i, &cartas[i], &ignorarAdicaoAoMonte))
+            return -1;
+    }
     int resultado = compararCartasComSuperTrunfo(cartas[0], cartas[1], atributo);
     if (resultado == -2) return -1;
     if (resultado == 0) { empatados[0] = 0; empatados[1] = 1; return 2; }
@@ -252,15 +287,9 @@ int executarDesempate(Jogo *jogo, Atributo atributo)
 
 int verificarFimJogo(Jogo *jogo)
 {
-    int ids[MAX_CARTAS], quantidade_ids = 0;
-
-    if (!jogo || jogo->quantidade_jogadores != MAX_JOGADORES ||
-        (jogo->jogo_ativo != 0 && jogo->jogo_ativo != 1) ||
-        jogo->jogadores[0].quantidade_cartas < 0 || jogo->jogadores[0].quantidade_cartas > MAX_CARTAS ||
-        jogo->jogadores[1].quantidade_cartas < 0 || jogo->jogadores[1].quantidade_cartas > MAX_CARTAS ||
-        jogo->monte_disputa.quantidade < 0 || jogo->monte_disputa.quantidade > MAX_CARTAS ||
-        jogo->jogadores[0].quantidade_cartas + jogo->jogadores[1].quantidade_cartas +
-            jogo->monte_disputa.quantidade != MAX_CARTAS) return -1;
+    if (!jogo || (jogo->jogo_ativo != 0 && jogo->jogo_ativo != 1) ||
+        !validarIntegridadeZonas(jogo))
+        return -1;
 
     /* Desempate flags and cached cards must match the current hand tops. */
     for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
@@ -280,24 +309,7 @@ int verificarFimJogo(Jogo *jogo)
         }
     }
 
-    /* Every card must exist in exactly one zone in a stable state. */
-    for (int jogador = 0; jogador < MAX_JOGADORES; ++jogador) {
-        for (int i = 0; i < jogo->jogadores[jogador].quantidade_cartas; ++i) {
-            Carta *carta = &jogo->jogadores[jogador].cartas[i];
-            if (!validarCarta(carta)) return -1;
-            for (int j = 0; j < quantidade_ids; ++j)
-                if (ids[j] == carta->id) return -1;
-            ids[quantidade_ids++] = carta->id;
-        }
-    }
-    for (int i = 0; i < jogo->monte_disputa.quantidade; ++i) {
-        Carta *carta = &jogo->monte_disputa.cartas[i];
-        if (!validarCarta(carta)) return -1;
-        for (int j = 0; j < quantidade_ids; ++j)
-            if (ids[j] == carta->id) return -1;
-        ids[quantidade_ids++] = carta->id;
-    }
-    if (quantidade_ids != MAX_CARTAS) return -1;
+    /* validarIntegridadeZonas ja garantiu cartas, contagem e IDs unicos. */
 
     if (jogo->jogadores[0].quantidade_cartas == MAX_CARTAS ||
         jogo->jogadores[1].quantidade_cartas == MAX_CARTAS ||

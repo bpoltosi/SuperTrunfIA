@@ -88,6 +88,10 @@ SuperTrunfIA/
 │   ├── jogo.c
 │   ├── main.c
 │   └── util.c
+├── tests/
+│   ├── README.md
+│   ├── smoke.ps1
+│   └── test_refactors.c
 └── README.md
 ```
 
@@ -105,15 +109,17 @@ Os cabeçalhos em `includes/` definem os tipos e as interfaces públicas das fun
 
 ## Testes e validação
 
-A branch principal atualmente contém os fontes, cabeçalhos e dados do jogo, mas não mantém um diretório de testes automatizados. Para validar uma alteração, no mínimo:
+Os testes automatizados e o smoke test da interface estão documentados em [tests/README.md](tests/README.md).
 
-1. Compile com as opções estritas apresentadas acima.
-2. Inicie uma partida e conclua a primeira rodada manualmente.
-3. Verifique o avanço manual com Enter e a ativação da simulação com P/p.
-4. Exercite uma disputa comum e uma situação de empate/desempate.
-5. Confira a contagem de cartas e o encerramento da partida.
+No Windows/PowerShell, execute na raiz do repositório:
 
-Quando testes automatizados forem adicionados novamente ao repositório, seus comandos e sua cobertura deverão ser documentados nesta seção.
+```powershell
+.\tests\smoke.ps1
+```
+
+O script compila o aplicativo e a suíte de regressão com C11 estrito, executa os testes de cartas, CSV, integridade do motor e desempate, e valida o fluxo de uma partida manual seguida de simulação.
+
+A análise estática também deve ser executada antes de integrar alterações. ASan/UBSan dependem de runtimes compatíveis instalados; a limitação do ambiente MinGW atual está registrada em `tests/README.md`.
 
 ## Diretrizes de desenvolvimento
 

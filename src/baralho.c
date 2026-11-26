@@ -12,45 +12,88 @@
 
 static int lerLinha(FILE *arquivo, char *linha, size_t tamanho)
 {
-    if (!fgets(linha, (int)tamanho, arquivo)) return 0;
-    size_t n=strlen(linha);
-    if (n && linha[n-1]!='\n' && !feof(arquivo)) {
-        int c; while ((c=fgetc(arquivo))!='\n' && c!=EOF) { }
+    size_t comprimento;
+
+    if (!fgets(linha, (int)tamanho, arquivo))
+        return 0;
+
+    comprimento = strlen(linha);
+    if (comprimento > 0 && linha[comprimento - 1] != '\n' && !feof(arquivo)) {
+        int caractere;
+
+        do {
+            caractere = fgetc(arquivo);
+        } while (caractere != '\n' && caractere != EOF);
+
         return -1;
     }
+
     return 1;
 }
 static int separarCamposCSV(char *linha, char campos[QUANTIDADE_CAMPOS_CSV][TAMANHO_CAMPO_CSV])
 {
-    int campo=0, pos=0, aspas=0, fechou=0;
-    for (size_t i=0;linha[i]!='\0';++i) {
-        char c=linha[i];
-        if (c=='"') {
-            if (aspas && linha[i+1]=='"') {
-                if (pos>=TAMANHO_CAMPO_CSV-1) return 0;
-                campos[campo][pos++]='"'; ++i;
-            } else if (aspas) { aspas=0; fechou=1; }
-            else if (pos==0 && !fechou) aspas=1;
-            else return 0;
-        } else if (c==',' && !aspas) {
-            if (campo>=QUANTIDADE_CAMPOS_CSV-1) return 0;
-            campos[campo][pos]='\0'; ++campo; pos=0; fechou=0;
-        } else if (c!='\r' && c!='\n') {
-            if (fechou || pos>=TAMANHO_CAMPO_CSV-1) return 0;
-            campos[campo][pos++]=c;
+    int indiceCampo = 0;
+    size_t posicaoCampo = 0;
+    int dentroDeAspas = 0;
+    int aspasFechadas = 0;
+
+    for (size_t i = 0; linha[i] != '\0'; ++i) {
+        char caractere = linha[i];
+
+        if (caractere == '"') {
+            if (dentroDeAspas && linha[i + 1] == '"') {
+                if (posicaoCampo >= TAMANHO_CAMPO_CSV - 1)
+                    return 0;
+
+                campos[indiceCampo][posicaoCampo++] = '"';
+                ++i;
+            } else if (dentroDeAspas) {
+                dentroDeAspas = 0;
+                aspasFechadas = 1;
+            } else if (posicaoCampo == 0 && !aspasFechadas) {
+                dentroDeAspas = 1;
+            } else {
+                return 0;
+            }
+        } else if (caractere == ',' && !dentroDeAspas) {
+            if (indiceCampo >= QUANTIDADE_CAMPOS_CSV - 1)
+                return 0;
+
+            campos[indiceCampo][posicaoCampo] = '\0';
+            ++indiceCampo;
+            posicaoCampo = 0;
+            aspasFechadas = 0;
+        } else if (caractere != '\r' && caractere != '\n') {
+            if (aspasFechadas || posicaoCampo >= TAMANHO_CAMPO_CSV - 1)
+                return 0;
+
+            campos[indiceCampo][posicaoCampo++] = caractere;
         }
     }
-    if (aspas) return 0;
-    campos[campo][pos]='\0';
-    return campo==QUANTIDADE_CAMPOS_CSV-1;
+
+    if (dentroDeAspas)
+        return 0;
+
+    campos[indiceCampo][posicaoCampo] = '\0';
+    return indiceCampo == QUANTIDADE_CAMPOS_CSV - 1;
 }
 static int converterInteiro(const char *texto, int *valor)
 {
-    char *fim; long convertido;
-    if (!texto || !valor || !texto[0]) return 0;
-    errno=0; convertido=strtol(texto,&fim,10);
-    if (errno==ERANGE || texto==fim || *fim!='\0' || convertido<INT_MIN || convertido>INT_MAX) return 0;
-    *valor=(int)convertido; return 1;
+    char *fim;
+    long convertido;
+
+    if (!texto || !valor || texto[0] == '\0')
+        return 0;
+
+    errno = 0;
+    convertido = strtol(texto, &fim, 10);
+
+    if (errno == ERANGE || texto == fim || *fim != '\0' ||
+        convertido < INT_MIN || convertido > INT_MAX)
+        return 0;
+
+    *valor = (int)convertido;
+    return 1;
 }
 static void reportarErroCSV(int linha, const char *campo)
 {
@@ -69,55 +112,158 @@ static int converterClasse(const char *texto, ClasseCarta *classe)
 }
 int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
 {
-    FILE *arquivo; char linha[TAMANHO_LINHA_CSV];
+    FILE *arquivo;
+    char linha[TAMANHO_LINHA_CSV];
     char campos[QUANTIDADE_CAMPOS_CSV][TAMANHO_CAMPO_CSV];
-    Baralho temporario={0}; int quantidade_super=0, classes[4]={0}, numeroLinha=1;
-    if (!baralho || !caminho) return 0;
-    baralho->quantidade=0;
-    arquivo=fopen(caminho,"r");
-    if (!arquivo) { reportarErroCSV(0,"arquivo inacessivel"); return 0; }
-    int status=lerLinha(arquivo,linha,sizeof linha);
-    if (status!=1) { reportarErroCSV(1,"cabecalho ausente ou linha longa"); fclose(arquivo); return 0; }
-    if (strlen(linha)>=3 && (unsigned char)linha[0]==0xEF &&
-        (unsigned char)linha[1]==0xBB && (unsigned char)linha[2]==0xBF)
-        memmove(linha,linha+3,strlen(linha+3)+1);
-    linha[strcspn(linha,"\r\n")]='\0';
-    if (strcmp(linha,CABECALHO_CSV)!=0) { reportarErroCSV(1,"cabecalho/schema"); fclose(arquivo); return 0; }
-    while ((status=lerLinha(arquivo,linha,sizeof linha))==1) {
-        ++numeroLinha; Carta carta={0};
-        if (linha[0]=='\r' || linha[0]=='\n' || linha[0]=='\0') { reportarErroCSV(numeroLinha,"linha vazia"); fclose(arquivo); return 0; }
-        memset(campos,0,sizeof campos);
-        if (!separarCamposCSV(linha,campos)) { reportarErroCSV(numeroLinha,"formato ou quantidade de campos"); fclose(arquivo); return 0; }
-        if (!converterInteiro(campos[0],&carta.id)) { reportarErroCSV(numeroLinha,"id"); fclose(arquivo); return 0; }
-        if (!converterClasse(campos[4],&carta.classe)) { reportarErroCSV(numeroLinha,"classe"); fclose(arquivo); return 0; }
-        if (!converterInteiro(campos[5],&carta.raciocinio)) { reportarErroCSV(numeroLinha,"raciocinio"); fclose(arquivo); return 0; }
-        if (!converterInteiro(campos[6],&carta.programacao)) { reportarErroCSV(numeroLinha,"programacao"); fclose(arquivo); return 0; }
-        if (!converterInteiro(campos[7],&carta.matematica)) { reportarErroCSV(numeroLinha,"matematica"); fclose(arquivo); return 0; }
-        if (!converterInteiro(campos[8],&carta.conhecimento)) { reportarErroCSV(numeroLinha,"conhecimento"); fclose(arquivo); return 0; }
-        if (temporario.quantidade>=MAX_CARTAS) { reportarErroCSV(numeroLinha,"quantidade de cartas excedida"); fclose(arquivo); return 0; }
-        if (strcmp(campos[9],"modelo") && strcmp(campos[9],"super_trunfo")) { reportarErroCSV(numeroLinha,"tipo_carta"); fclose(arquivo); return 0; }
-        if (strlen(campos[1])>=sizeof carta.empresa || strlen(campos[2])>=sizeof carta.modelo ||
-            strlen(campos[3])>=sizeof carta.caracteristicas) { reportarErroCSV(numeroLinha,"campo de texto excede limite"); fclose(arquivo); return 0; }
-        strncpy(carta.empresa,campos[1],sizeof carta.empresa-1);
-        strncpy(carta.modelo,campos[2],sizeof carta.modelo-1);
-        strncpy(carta.caracteristicas,campos[3],sizeof carta.caracteristicas-1);
-        carta.super_trunfo=!strcmp(campos[9],"super_trunfo");
-        if (!validarCarta(&carta)) { reportarErroCSV(numeroLinha,"campo obrigatorio, range ou flag"); fclose(arquivo); return 0; }
-        for (int i=0;i<temporario.quantidade;i++)
-            if (temporario.cartas[i].id==carta.id) { reportarErroCSV(numeroLinha,"id duplicado"); fclose(arquivo); return 0; }
-        if (carta.super_trunfo) quantidade_super++;
-        classes[carta.classe]++;
-        temporario.cartas[temporario.quantidade++]=carta;
-    }
-    fclose(arquivo);
-    if (status==-1) { reportarErroCSV(numeroLinha+1,"linha excede tamanho maximo"); return 0; }
-    if (temporario.quantidade!=MAX_CARTAS || quantidade_super!=1 ||
-        classes[CLASSE_A]!=5 || classes[CLASSE_B]!=6 || classes[CLASSE_C]!=9 || classes[CLASSE_D]!=14) {
-        reportarErroCSV(numeroLinha,"quantidade total, Super Trunfo ou distribuicao de classes");
+    Baralho temporario = {0};
+    int quantidadeSuper = 0;
+    int classes[4] = {0};
+    int numeroLinha = 1;
+    int status;
+    int sucesso = 0;
+    int linhaErro = 0;
+    const char *erro = NULL;
+
+    if (!baralho || !caminho)
+        return 0;
+
+    baralho->quantidade = 0;
+    arquivo = fopen(caminho, "r");
+    if (!arquivo) {
+        reportarErroCSV(0, "arquivo inacessivel");
         return 0;
     }
-    *baralho=temporario; /* publica apenas após validar o arquivo inteiro */
-    return 1;
+
+    status = lerLinha(arquivo, linha, sizeof linha);
+    if (status != 1) {
+        linhaErro = 1;
+        erro = "cabecalho ausente ou linha longa";
+        goto finalizar;
+    }
+
+    /* Remove somente o BOM UTF-8 inicial, quando presente. */
+    if (strlen(linha) >= 3 &&
+        (unsigned char)linha[0] == 0xEF &&
+        (unsigned char)linha[1] == 0xBB &&
+        (unsigned char)linha[2] == 0xBF) {
+        memmove(linha, linha + 3, strlen(linha + 3) + 1);
+    }
+
+    linha[strcspn(linha, "\r\n")] = '\0';
+    if (strcmp(linha, CABECALHO_CSV) != 0) {
+        linhaErro = 1;
+        erro = "cabecalho/schema";
+        goto finalizar;
+    }
+
+    while ((status = lerLinha(arquivo, linha, sizeof linha)) == 1) {
+        Carta carta = {0};
+        ++numeroLinha;
+
+        if (linha[0] == '\r' || linha[0] == '\n' || linha[0] == '\0') {
+            erro = "linha vazia";
+            goto finalizar;
+        }
+
+        memset(campos, 0, sizeof campos);
+        if (!separarCamposCSV(linha, campos)) {
+            erro = "formato ou quantidade de campos";
+            goto finalizar;
+        }
+
+        if (!converterInteiro(campos[0], &carta.id)) {
+            erro = "id";
+            goto finalizar;
+        }
+        if (!converterClasse(campos[4], &carta.classe)) {
+            erro = "classe";
+            goto finalizar;
+        }
+        if (!converterInteiro(campos[5], &carta.raciocinio)) {
+            erro = "raciocinio";
+            goto finalizar;
+        }
+        if (!converterInteiro(campos[6], &carta.programacao)) {
+            erro = "programacao";
+            goto finalizar;
+        }
+        if (!converterInteiro(campos[7], &carta.matematica)) {
+            erro = "matematica";
+            goto finalizar;
+        }
+        if (!converterInteiro(campos[8], &carta.conhecimento)) {
+            erro = "conhecimento";
+            goto finalizar;
+        }
+
+        if (temporario.quantidade >= MAX_CARTAS) {
+            erro = "quantidade de cartas excedida";
+            goto finalizar;
+        }
+        if (strcmp(campos[9], "modelo") != 0 &&
+            strcmp(campos[9], "super_trunfo") != 0) {
+            erro = "tipo_carta";
+            goto finalizar;
+        }
+
+        if (strlen(campos[1]) >= sizeof carta.empresa ||
+            strlen(campos[2]) >= sizeof carta.modelo ||
+            strlen(campos[3]) >= sizeof carta.caracteristicas) {
+            erro = "campo de texto excede limite";
+            goto finalizar;
+        }
+
+        memcpy(carta.empresa, campos[1], strlen(campos[1]) + 1);
+        memcpy(carta.modelo, campos[2], strlen(campos[2]) + 1);
+        memcpy(carta.caracteristicas, campos[3], strlen(campos[3]) + 1);
+        carta.super_trunfo = strcmp(campos[9], "super_trunfo") == 0;
+
+        if (!validarCarta(&carta)) {
+            erro = "campo obrigatorio, range ou flag";
+            goto finalizar;
+        }
+
+        for (int i = 0; i < temporario.quantidade; ++i) {
+            if (temporario.cartas[i].id == carta.id) {
+                erro = "id duplicado";
+                goto finalizar;
+            }
+        }
+
+        if (carta.super_trunfo)
+            ++quantidadeSuper;
+        ++classes[carta.classe];
+        temporario.cartas[temporario.quantidade++] = carta;
+    }
+
+    if (status == -1) {
+        linhaErro = numeroLinha + 1;
+        erro = "linha excede tamanho maximo";
+        goto finalizar;
+    }
+    if (ferror(arquivo)) {
+        linhaErro = numeroLinha + 1;
+        erro = "falha de leitura do arquivo";
+        goto finalizar;
+    }
+
+    if (temporario.quantidade != MAX_CARTAS || quantidadeSuper != 1 ||
+        classes[CLASSE_A] != 5 || classes[CLASSE_B] != 6 ||
+        classes[CLASSE_C] != 9 || classes[CLASSE_D] != 14) {
+        erro = "quantidade total, Super Trunfo ou distribuicao de classes";
+        goto finalizar;
+    }
+
+    /* Publica o resultado somente depois da validacao completa. */
+    *baralho = temporario;
+    sucesso = 1;
+
+finalizar:
+    fclose(arquivo);
+    if (!sucesso)
+        reportarErroCSV(linhaErro ? linhaErro : numeroLinha, erro);
+
+    return sucesso;
 }
 void embaralharBaralho(Baralho *baralho)
 {
