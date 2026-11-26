@@ -91,7 +91,7 @@ static int sortearPrimeiroJogador(Jogo *jogo)
     int resultadoSorteio;
     int jogadorEscolhedor;
 
-    printf("\nSorteio inicial: %s, escolha 1 (PAR) ou 2 (IMPAR).\n",
+    printf("\nSorteio inicial: %s, escolha 1 (IMPAR) ou 2 (PAR).\n",
            jogo->jogadores[0].nome);
 
     /* O sorteio inicial e sempre uma escolha manual. */
@@ -99,12 +99,12 @@ static int sortearPrimeiroJogador(Jogo *jogo)
     if (escolha < 1 || escolha > 2)
         return -1;
 
-    /* A entrada e o resultado usam a mesma codificacao: 1=PAR, 2=IMPAR. */
+    /* A entrada e o resultado usam a mesma codificacao: 1=IMPAR, 2=PAR. */
     resultadoSorteio = rand() % 2 + 1;
     printf("Escolha: %s; resultado do sorteio: %d (%s).\n",
-           escolha == 1 ? "PAR" : "IMPAR",
+           escolha == 1 ? "IMPAR" : "PAR",
            resultadoSorteio,
-           resultadoSorteio == 1 ? "PAR" : "IMPAR");
+           resultadoSorteio == 1 ? "IMPAR" : "PAR");
 
     jogadorEscolhedor = determinarVencedorSorteio(escolha, resultadoSorteio);
     if (jogadorEscolhedor < 0)
