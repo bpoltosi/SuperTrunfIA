@@ -48,7 +48,6 @@ static int validarIntegridadeZonas(const Jogo *jogo)
                 if (ids[j] == carta->id)
                     return 0;
             }
-
             ids[quantidadeIds++] = carta->id;
         }
     }
@@ -65,10 +64,8 @@ static int validarIntegridadeZonas(const Jogo *jogo)
             if (ids[j] == carta->id)
                 return 0;
         }
-
         ids[quantidadeIds++] = carta->id;
     }
-
     return quantidadeIds == MAX_CARTAS;
 }
 
@@ -263,7 +260,6 @@ int executarRodada(Jogo *jogo, Atributo atributo)
     int empatados[2] = {0, 1};
     atualizarParticipantesDesempate(jogo, empatados, 2);
 
-    /* If one player cannot reveal another card, the opponent receives the pile. */
     if ((jogo->jogadores[0].quantidade_cartas == 0) !=
         (jogo->jogadores[1].quantidade_cartas == 0))
     {
