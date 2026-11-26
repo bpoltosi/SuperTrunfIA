@@ -14,7 +14,7 @@ int lerInteiro(int minimo, int maximo);
 int lerString(char *destino, int tamanho);
 
 // Retorna 0 se o jogador venceu, 1 se perdeu e -1 para entrada invalida.
-// Convencao: 1 = PAR; 2 = IMPAR, tanto para escolha quanto para resultado.
+// Convencao: 1 = IMPAR; 2 = PAR, tanto para escolha quanto para resultado.
 int determinarVencedorSorteio(int escolha, int resultado);
 
 // Inicializa a semente aleatoria.
