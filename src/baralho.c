@@ -293,7 +293,7 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
 
     if (temporario.quantidade != MAX_CARTAS || quantidadeSuper != 1 ||
         classes[CLASSE_A] != 5 || classes[CLASSE_B] != 6 ||
-        classes[CLASSE_C] != 9 || classes[CLASSE_D] != 14)
+        classes[CLASSE_C] != 9 || classes[CLASSE_D] != 4)
     {
         erro = "quantidade total, Super Trunfo ou distribuicao de classes";
         goto finalizar;
@@ -340,7 +340,7 @@ int distribuirCartas(Baralho *baralho, Jogador *jogadores, int quantidade_jogado
     for (int i = 0; i < MAX_CARTAS; i++)
         if (!adicionarCarta(&temporarios[i % quantidade_jogadores], baralho->cartas[i]))
             return 0;
-    if (temporarios[0].quantidade_cartas != 17 || temporarios[1].quantidade_cartas != 17)
+    if (temporarios[0].quantidade_cartas != 12 || temporarios[1].quantidade_cartas != 12)
         return 0;
     jogadores[0] = temporarios[0];
     jogadores[1] = temporarios[1];
