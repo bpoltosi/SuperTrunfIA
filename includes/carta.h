@@ -1,6 +1,6 @@
 #ifndef CARTA_H
 #define CARTA_H
-#define MAX_CARTAS 34
+#define MAX_CARTAS 24
 
 typedef enum
 {
