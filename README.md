@@ -28,9 +28,10 @@ Execute os comandos a partir da raiz do repositório.
 ### Windows (PowerShell)
 
 ```powershell
-gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -Iincludes src\*.c -o build.exe
-.\build.exe
+gcc -Wall -Wextra -Iincludes src/*.c -o SuperTrunfIA.exe
+.\SuperTrunfIA.exe   
 ```
+
 
 ### Linux / macOS
 
