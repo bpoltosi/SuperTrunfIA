@@ -29,9 +29,11 @@ Execute os comandos a partir da raiz do repositório.
 
 ```powershell
 gcc -Wall -Wextra -Iincludes src/*.c -o SuperTrunfIA.exe
-.\SuperTrunfIA.exe   
 ```
 
+```powershell
+.\SuperTrunfIA.exe   
+```
 
 ### Linux / macOS
 
