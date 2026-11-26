@@ -6,10 +6,10 @@ O projeto prioriza regras explícitas, estruturas estáticas, separação entre 
 
 ## Visão geral
 
-- **34 cartas:** 33 modelos de IA e Alan Turing como carta especial Super Trunfo.
+- **24 cartas:** 23 modelos de IA e Alan Turing como carta especial Super Trunfo.
 - **4 atributos:** Raciocínio, Programação, Matemática e Conhecimento, com valores de 0 a 100.
 - **Classes:** A, B, C e D, registradas individualmente em cada carta.
-- **Dois jogadores:** 17 cartas iniciais para cada participante.
+- **Dois jogadores:** 12 cartas iniciais para cada participante.
 - **Desempates:** as cartas da disputa ficam em um monte da mesa até a resolução.
 - **Modos de execução:** toda partida começa manualmente; durante as pausas, Enter mantém o avanço manual e P/p ativa a simulação até o fim.
 
@@ -52,7 +52,7 @@ A primeira rodada sempre exige interação manual, incluindo o sorteio inicial e
 
 ## Regras essenciais
 
-1. O baralho contém 34 cartas e é distribuído igualmente entre os dois jogadores.
+1. O baralho contém 24 cartas e é distribuído igualmente entre os dois jogadores.
 2. O jogador definido pelo sorteio inicial escolhe o atributo da primeira rodada.
 3. Nas rodadas principais seguintes, o vencedor da rodada anterior escolhe o próximo atributo.
 4. A maior pontuação no atributo escolhido vence a disputa.
@@ -68,7 +68,7 @@ Os dados ficam em `data/cartas.csv`. O cabeçalho e a ordem das colunas são:
 id,empresa,modelo,caracteristicas,classe,raciocinio,programacao,matematica,conhecimento,tipo_carta
 ```
 
-O carregamento valida o formato, os campos, os valores numéricos, os IDs e a composição do baralho. O arquivo deve conter exatamente 34 cartas válidas e uma carta `super_trunfo`, da classe A.
+O carregamento valida o formato, os campos, os valores numéricos, os IDs e a composição do baralho. O arquivo deve conter exatamente 24 cartas válidas e uma carta `super_trunfo`, da classe A.
 
 ## Organização do código
 
