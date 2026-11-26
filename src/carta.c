@@ -13,9 +13,17 @@ int obterPontuacao(Carta carta, Atributo atributo)
     }
 }
 
+static int compararPontuacoes(int pontos1, int pontos2)
+{
+    if (pontos1 > pontos2) return 1;
+    if (pontos1 < pontos2) return -1;
+    return 0;
+}
+
 int compararCartas(Carta carta1, Carta carta2, Atributo atributo)
 {
-    int pontos1, pontos2;
+    int pontos1;
+    int pontos2;
 
     if (!validarCarta(&carta1) || !validarCarta(&carta2))
         return -2;
@@ -25,9 +33,7 @@ int compararCartas(Carta carta1, Carta carta2, Atributo atributo)
     if (pontos1 < 0 || pontos2 < 0)
         return -2;
 
-    if (pontos1 > pontos2) return 1;
-    if (pontos1 < pontos2) return -1;
-    return 0;
+    return compararPontuacoes(pontos1, pontos2);
 }
 
 int verificarSuperTrunfo(Carta carta)
@@ -37,20 +43,28 @@ int verificarSuperTrunfo(Carta carta)
 
 int compararCartasComSuperTrunfo(Carta carta1, Carta carta2, Atributo atributo)
 {
-    int super1, super2;
+    int pontos1;
+    int pontos2;
+    int super1;
+    int super2;
 
-    if (!validarCarta(&carta1) || !validarCarta(&carta2) ||
-        obterPontuacao(carta1, atributo) < 0 ||
-        obterPontuacao(carta2, atributo) < 0)
+    if (!validarCarta(&carta1) || !validarCarta(&carta2))
+        return -2;
+
+    pontos1 = obterPontuacao(carta1, atributo);
+    pontos2 = obterPontuacao(carta2, atributo);
+    if (pontos1 < 0 || pontos2 < 0)
         return -2;
 
     super1 = verificarSuperTrunfo(carta1);
     super2 = verificarSuperTrunfo(carta2);
 
-    if (super1 && !super2 && carta2.classe != CLASSE_A) return 1;
-    if (super2 && !super1 && carta1.classe != CLASSE_A) return -1;
+    if (super1 && !super2 && carta2.classe != CLASSE_A)
+        return 1;
+    if (super2 && !super1 && carta1.classe != CLASSE_A)
+        return -1;
 
-    return compararCartas(carta1, carta2, atributo);
+    return compararPontuacoes(pontos1, pontos2);
 }
 
 ClasseCarta obterClasseCarta(const Carta *carta)

@@ -66,67 +66,170 @@ static void mostrarConfronto(Jogo *jogo, Atributo atributo, int desempate)
         if (i == 0) puts("============================================================");
     }
 }
+static int sortearPrimeiroJogador(Jogo *jogo)
+{
+    int escolha;
+    int resultadoSorteio;
+    int jogadorEscolhedor;
+
+    printf("\nSorteio inicial: %s, escolha 1 (PAR) ou 2 (IMPAR).\n",
+           jogo->jogadores[0].nome);
+
+    /* O sorteio inicial e sempre uma escolha manual. */
+    escolha = lerInteiro(1, 2);
+    if (escolha < 1 || escolha > 2)
+        return -1;
+
+    /* A entrada e o resultado usam a mesma codificacao: 1=PAR, 2=IMPAR. */
+    resultadoSorteio = rand() % 2 + 1;
+    printf("Escolha: %s; resultado do sorteio: %d (%s).\n",
+           escolha == 1 ? "PAR" : "IMPAR",
+           resultadoSorteio,
+           resultadoSorteio == 1 ? "PAR" : "IMPAR");
+
+    jogadorEscolhedor = determinarVencedorSorteio(escolha, resultadoSorteio);
+    if (jogadorEscolhedor < 0)
+        return -1;
+
+    printf("%s venceu o sorteio e escolhe o primeiro atributo.\n",
+           jogo->jogadores[jogadorEscolhedor].nome);
+    return jogadorEscolhedor;
+}
+
+static int executarCicloDesempate(Jogo *jogo, int jogadorEscolhedor, int simulacao)
+{
+    int numeroDesempate = 1;
+
+    while (verificarFimJogo(jogo) == 0 &&
+           verificarJogadorDesempate(jogo, 0) &&
+           verificarJogadorDesempate(jogo, 1)) {
+        int participantes[2];
+        int resultado;
+        Atributo atributo;
+
+        printf("\nDesempate %d — escolha de %s\n",
+               numeroDesempate++, jogo->jogadores[jogadorEscolhedor].nome);
+
+        atributo = simulacao ? atributoAleatorio() : solicitarAtributo();
+        if (atributo < RACIOCINIO || atributo >= QUANTIDADE_ATRIBUTOS)
+            return 0;
+
+        mostrarConfronto(jogo, atributo, 1);
+        resultado = determinarEmpatados(jogo, atributo, participantes);
+        if (resultado < 1) {
+            exibirErro("Desempate invalido.");
+            return 0;
+        }
+
+        if (!executarDesempate(jogo, atributo)) {
+            exibirErro("Falha no desempate.");
+            return 0;
+        }
+
+        exibirResultadoRodada(resultado == 1
+            ? jogo->jogadores[participantes[0]].nome
+            : NULL);
+
+        if (resultado == 1)
+            break;
+
+        puts("Novo empate: as cartas reveladas sao reutilizadas; escolha outro atributo.");
+    }
+
+    return 1;
+}
+
+static int processarRodada(Jogo *jogo, int jogadorEscolhedor, int simulacao)
+{
+    Atributo atributo;
+    int participantes[2];
+    int resultado;
+
+    printf("\n\nRODADA %d | %s deve escolher o atributo\n\n",
+           jogo->rodada_atual, jogo->jogadores[jogadorEscolhedor].nome);
+
+    atributo = simulacao ? atributoAleatorio() : solicitarAtributo();
+    if (atributo < RACIOCINIO || atributo >= QUANTIDADE_ATRIBUTOS)
+        return 0;
+
+    mostrarConfronto(jogo, atributo, 0);
+    resultado = determinarEmpatados(jogo, atributo, participantes);
+    if (resultado < 1) {
+        exibirErro("Confronto invalido.");
+        return 0;
+    }
+
+    exibirResultadoRodada(resultado == 1
+        ? jogo->jogadores[participantes[0]].nome
+        : NULL);
+
+    if (!executarRodada(jogo, atributo)) {
+        exibirErro("Falha ao processar rodada.");
+        return 0;
+    }
+
+    if (resultado == 2 &&
+        !executarCicloDesempate(jogo, jogadorEscolhedor, simulacao))
+        return 0;
+
+    return 1;
+}
+
 static int executarPartida(Jogo *jogo, int simulacao)
 {
-    int paridade, sorteio, seletor;
-    printf("\nSorteio inicial: %s, escolha 1 (PAR) ou 2 (IMPAR).\n", jogo->jogadores[0].nome);
-    paridade = simulacao ? (rand()%2+1) : lerInteiro(1,2);
-    if (paridade < 1 || paridade > 2) return 0;
-    /* O sorteio usa a mesma codificacao da entrada: 1 = PAR; 2 = IMPAR. */
-    sorteio = rand()%2+1;
-    printf("Escolha: %s; resultado do sorteio: %d (%s).\n",
-           paridade==1?"PAR":"IMPAR", sorteio, sorteio==1?"PAR":"IMPAR");
-    seletor = determinarVencedorSorteio(paridade, sorteio);
-    if (seletor < 0) return 0;
-    printf("%s venceu o sorteio e escolhe o primeiro atributo.\n", jogo->jogadores[seletor].nome);
-    /* A primeira rodada é obrigatoriamente manual; simulação só é oferecida após ela. */
-    while (verificarFimJogo(jogo)==0) {
-        int escolha_desempate = seletor;
-        printf("\n\nRODADA %d | %s deve escolher o atributo\n\n",
-               jogo->rodada_atual, jogo->jogadores[seletor].nome);
-        Atributo atributo = simulacao ? atributoAleatorio() : solicitarAtributo();
-        if (atributo < RACIOCINIO || atributo >= QUANTIDADE_ATRIBUTOS) return 0;
-        mostrarConfronto(jogo, atributo, 0);
-        int participantes[2];
-        int resultado = determinarEmpatados(jogo,atributo,participantes);
-        if (resultado < 1) { exibirErro("Confronto invalido."); return 0; }
-        exibirResultadoRodada(resultado == 1 ? jogo->jogadores[participantes[0]].nome : NULL);
-        if (!executarRodada(jogo,atributo)) { exibirErro("Falha ao processar rodada."); return 0; }
-        if (resultado == 2) {
-            int desempate=1;
-            while (verificarFimJogo(jogo) == 0 && verificarJogadorDesempate(jogo,0) && verificarJogadorDesempate(jogo,1)) {
-                printf("\nDesempate %d — escolha de %s\n",
-                       desempate++, jogo->jogadores[escolha_desempate].nome);
-                Atributo attr = simulacao ? atributoAleatorio() : solicitarAtributo();
-                if (attr < RACIOCINIO || attr >= QUANTIDADE_ATRIBUTOS) return 0;
-                mostrarConfronto(jogo,attr,1);
-                int participantesTie[2];
-                int tieResult = determinarEmpatados(jogo,attr,participantesTie);
-                if (tieResult < 1) { exibirErro("Desempate invalido."); return 0; }
-                if (!executarDesempate(jogo,attr)) { exibirErro("Falha no desempate."); return 0; }
-                exibirResultadoRodada(tieResult == 1 ? jogo->jogadores[participantesTie[0]].nome : NULL);
-                if (tieResult == 1) break;
-                puts("Novo empate: as cartas reveladas sao reutilizadas; escolha outro atributo.");
-            }
+    int seletor = sortearPrimeiroJogador(jogo);
+    int estadoJogo;
+
+    if (seletor < 0)
+        return 0;
+
+    /* A primeira rodada e manual; a simulacao so pode ser ativada na pausa. */
+    estadoJogo = verificarFimJogo(jogo);
+    if (estadoJogo < 0) {
+        exibirErro("Estado inconsistente.");
+        return 0;
+    }
+
+    while (estadoJogo == 0) {
+        int controle;
+
+        if (!processarRodada(jogo, seletor, simulacao))
+            return 0;
+
+        estadoJogo = verificarFimJogo(jogo);
+        if (estadoJogo < 0) {
+            exibirErro("Estado inconsistente.");
+            return 0;
         }
-        int fim=verificarFimJogo(jogo);
-        if (fim < 0) { exibirErro("Estado inconsistente."); return 0; }
-        if (fim==1) break;
-        printf("\nContagem: %s=%d | %s=%d\n",jogo->jogadores[0].nome,jogo->jogadores[0].quantidade_cartas,jogo->jogadores[1].nome,jogo->jogadores[1].quantidade_cartas);
+        if (estadoJogo == 1)
+            break;
+
+        printf("\nContagem: %s=%d | %s=%d\n",
+               jogo->jogadores[0].nome,
+               jogo->jogadores[0].quantidade_cartas,
+               jogo->jogadores[1].nome,
+               jogo->jogadores[1].quantidade_cartas);
+
         seletor = jogo->jogador_atual;
-        if (!simulacao) {
-            int controle=pausarOuSimular();
-            if (controle < 0) return 0;
-            if (controle == 1) {
-                simulacao=1;
-                puts("SIMULACAO AUTOMATICA ATIVADA: ate o fim da partida.");
-            }
+        if (simulacao)
+            continue;
+
+        controle = pausarOuSimular();
+        if (controle < 0)
+            return 0;
+
+        if (controle == 1) {
+            simulacao = 1;
+            puts("SIMULACAO AUTOMATICA ATIVADA: ate o fim da partida.");
         }
     }
-    Jogador *vencedor=determinarVencedorJogo(jogo);
-    if (verificarFimJogo(jogo) == 1)
-        exibirResultadoFinal(vencedor, jogo->jogadores, jogo->quantidade_jogadores);
-    return verificarFimJogo(jogo) == 1;
+
+    exibirResultadoFinal(
+        determinarVencedorJogo(jogo),
+        jogo->jogadores,
+        jogo->quantidade_jogadores
+    );
+    return estadoJogo == 1;
 }
 int main(void)
 {
