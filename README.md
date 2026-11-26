@@ -88,10 +88,6 @@ SuperTrunfIA/
 │   ├── jogo.c
 │   ├── main.c
 │   └── util.c
-├── tests/
-│   ├── README.md
-│   ├── smoke.ps1
-│   └── test_refactors.c
 └── README.md
 ```
 
@@ -106,20 +102,6 @@ Responsabilidades principais:
 - `main.c`: configuração do terminal e coordenação do fluxo da partida.
 
 Os cabeçalhos em `includes/` definem os tipos e as interfaces públicas das funções.
-
-## Testes e validação
-
-Os testes automatizados e o smoke test da interface estão documentados em [tests/README.md](tests/README.md).
-
-No Windows/PowerShell, execute na raiz do repositório:
-
-```powershell
-.\tests\smoke.ps1
-```
-
-O script compila o aplicativo e a suíte de regressão com C11 estrito, executa os testes de cartas, CSV, integridade do motor e desempate, e valida o fluxo de uma partida manual seguida de simulação.
-
-A análise estática também deve ser executada antes de integrar alterações. ASan/UBSan dependem de runtimes compatíveis instalados; a limitação do ambiente MinGW atual está registrada em `tests/README.md`.
 
 ## Diretrizes de desenvolvimento
 
