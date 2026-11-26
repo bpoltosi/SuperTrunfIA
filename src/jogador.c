@@ -3,11 +3,13 @@
 
 void inicializarJogador(Jogador *jogador, int id, const char *nome)
 {
-    if (jogador == NULL) return;
+    if (jogador == NULL)
+        return;
 
     memset(jogador, 0, sizeof(*jogador));
     jogador->id = id;
-    if (nome != NULL) {
+    if (nome != NULL)
+    {
         strncpy(jogador->nome, nome, sizeof(jogador->nome) - 1);
         jogador->nome[sizeof(jogador->nome) - 1] = '\0';
     }
@@ -58,7 +60,8 @@ int retirarCartaTopo(Jogador *jogador, Carta *carta)
 
 void liberarJogador(Jogador *jogador)
 {
-    if (jogador == NULL) return;
+    if (jogador == NULL)
+        return;
     jogador->quantidade_cartas = 0;
     jogador->nome[0] = '\0';
 }

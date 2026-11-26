@@ -18,10 +18,12 @@ static int lerLinha(FILE *arquivo, char *linha, size_t tamanho)
         return 0;
 
     comprimento = strlen(linha);
-    if (comprimento > 0 && linha[comprimento - 1] != '\n' && !feof(arquivo)) {
+    if (comprimento > 0 && linha[comprimento - 1] != '\n' && !feof(arquivo))
+    {
         int caractere;
 
-        do {
+        do
+        {
             caractere = fgetc(arquivo);
         } while (caractere != '\n' && caractere != EOF);
 
@@ -37,25 +39,36 @@ static int separarCamposCSV(char *linha, char campos[QUANTIDADE_CAMPOS_CSV][TAMA
     int dentroDeAspas = 0;
     int aspasFechadas = 0;
 
-    for (size_t i = 0; linha[i] != '\0'; ++i) {
+    for (size_t i = 0; linha[i] != '\0'; ++i)
+    {
         char caractere = linha[i];
 
-        if (caractere == '"') {
-            if (dentroDeAspas && linha[i + 1] == '"') {
+        if (caractere == '"')
+        {
+            if (dentroDeAspas && linha[i + 1] == '"')
+            {
                 if (posicaoCampo >= TAMANHO_CAMPO_CSV - 1)
                     return 0;
 
                 campos[indiceCampo][posicaoCampo++] = '"';
                 ++i;
-            } else if (dentroDeAspas) {
+            }
+            else if (dentroDeAspas)
+            {
                 dentroDeAspas = 0;
                 aspasFechadas = 1;
-            } else if (posicaoCampo == 0 && !aspasFechadas) {
+            }
+            else if (posicaoCampo == 0 && !aspasFechadas)
+            {
                 dentroDeAspas = 1;
-            } else {
+            }
+            else
+            {
                 return 0;
             }
-        } else if (caractere == ',' && !dentroDeAspas) {
+        }
+        else if (caractere == ',' && !dentroDeAspas)
+        {
             if (indiceCampo >= QUANTIDADE_CAMPOS_CSV - 1)
                 return 0;
 
@@ -63,7 +76,9 @@ static int separarCamposCSV(char *linha, char campos[QUANTIDADE_CAMPOS_CSV][TAMA
             ++indiceCampo;
             posicaoCampo = 0;
             aspasFechadas = 0;
-        } else if (caractere != '\r' && caractere != '\n') {
+        }
+        else if (caractere != '\r' && caractere != '\n')
+        {
             if (aspasFechadas || posicaoCampo >= TAMANHO_CAMPO_CSV - 1)
                 return 0;
 
@@ -97,17 +112,25 @@ static int converterInteiro(const char *texto, int *valor)
 }
 static void reportarErroCSV(int linha, const char *campo)
 {
-    if (linha>0) fprintf(stderr,"CSV: linha %d, campo/validacao %s.\n",linha,campo);
-    else fprintf(stderr,"CSV: %s.\n",campo);
+    if (linha > 0)
+        fprintf(stderr, "CSV: linha %d, campo/validacao %s.\n", linha, campo);
+    else
+        fprintf(stderr, "CSV: %s.\n", campo);
 }
 static int converterClasse(const char *texto, ClasseCarta *classe)
 {
-    if (!texto || !classe) return 0;
-    if (!strcmp(texto,"A")) *classe=CLASSE_A;
-    else if (!strcmp(texto,"B")) *classe=CLASSE_B;
-    else if (!strcmp(texto,"C")) *classe=CLASSE_C;
-    else if (!strcmp(texto,"D")) *classe=CLASSE_D;
-    else return 0;
+    if (!texto || !classe)
+        return 0;
+    if (!strcmp(texto, "A"))
+        *classe = CLASSE_A;
+    else if (!strcmp(texto, "B"))
+        *classe = CLASSE_B;
+    else if (!strcmp(texto, "C"))
+        *classe = CLASSE_C;
+    else if (!strcmp(texto, "D"))
+        *classe = CLASSE_D;
+    else
+        return 0;
     return 1;
 }
 int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
@@ -129,13 +152,15 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
 
     baralho->quantidade = 0;
     arquivo = fopen(caminho, "r");
-    if (!arquivo) {
+    if (!arquivo)
+    {
         reportarErroCSV(0, "arquivo inacessivel");
         return 0;
     }
 
     status = lerLinha(arquivo, linha, sizeof linha);
-    if (status != 1) {
+    if (status != 1)
+    {
         linhaErro = 1;
         erro = "cabecalho ausente ou linha longa";
         goto finalizar;
@@ -145,70 +170,84 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
     if (strlen(linha) >= 3 &&
         (unsigned char)linha[0] == 0xEF &&
         (unsigned char)linha[1] == 0xBB &&
-        (unsigned char)linha[2] == 0xBF) {
+        (unsigned char)linha[2] == 0xBF)
+    {
         memmove(linha, linha + 3, strlen(linha + 3) + 1);
     }
 
     linha[strcspn(linha, "\r\n")] = '\0';
-    if (strcmp(linha, CABECALHO_CSV) != 0) {
+    if (strcmp(linha, CABECALHO_CSV) != 0)
+    {
         linhaErro = 1;
         erro = "cabecalho/schema";
         goto finalizar;
     }
 
-    while ((status = lerLinha(arquivo, linha, sizeof linha)) == 1) {
+    while ((status = lerLinha(arquivo, linha, sizeof linha)) == 1)
+    {
         Carta carta = {0};
         ++numeroLinha;
 
-        if (linha[0] == '\r' || linha[0] == '\n' || linha[0] == '\0') {
+        if (linha[0] == '\r' || linha[0] == '\n' || linha[0] == '\0')
+        {
             erro = "linha vazia";
             goto finalizar;
         }
 
         memset(campos, 0, sizeof campos);
-        if (!separarCamposCSV(linha, campos)) {
+        if (!separarCamposCSV(linha, campos))
+        {
             erro = "formato ou quantidade de campos";
             goto finalizar;
         }
 
-        if (!converterInteiro(campos[0], &carta.id)) {
+        if (!converterInteiro(campos[0], &carta.id))
+        {
             erro = "id";
             goto finalizar;
         }
-        if (!converterClasse(campos[4], &carta.classe)) {
+        if (!converterClasse(campos[4], &carta.classe))
+        {
             erro = "classe";
             goto finalizar;
         }
-        if (!converterInteiro(campos[5], &carta.raciocinio)) {
+        if (!converterInteiro(campos[5], &carta.raciocinio))
+        {
             erro = "raciocinio";
             goto finalizar;
         }
-        if (!converterInteiro(campos[6], &carta.programacao)) {
+        if (!converterInteiro(campos[6], &carta.programacao))
+        {
             erro = "programacao";
             goto finalizar;
         }
-        if (!converterInteiro(campos[7], &carta.matematica)) {
+        if (!converterInteiro(campos[7], &carta.matematica))
+        {
             erro = "matematica";
             goto finalizar;
         }
-        if (!converterInteiro(campos[8], &carta.conhecimento)) {
+        if (!converterInteiro(campos[8], &carta.conhecimento))
+        {
             erro = "conhecimento";
             goto finalizar;
         }
 
-        if (temporario.quantidade >= MAX_CARTAS) {
+        if (temporario.quantidade >= MAX_CARTAS)
+        {
             erro = "quantidade de cartas excedida";
             goto finalizar;
         }
         if (strcmp(campos[9], "modelo") != 0 &&
-            strcmp(campos[9], "super_trunfo") != 0) {
+            strcmp(campos[9], "super_trunfo") != 0)
+        {
             erro = "tipo_carta";
             goto finalizar;
         }
 
         if (strlen(campos[1]) >= sizeof carta.empresa ||
             strlen(campos[2]) >= sizeof carta.modelo ||
-            strlen(campos[3]) >= sizeof carta.caracteristicas) {
+            strlen(campos[3]) >= sizeof carta.caracteristicas)
+        {
             erro = "campo de texto excede limite";
             goto finalizar;
         }
@@ -218,13 +257,16 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
         memcpy(carta.caracteristicas, campos[3], strlen(campos[3]) + 1);
         carta.super_trunfo = strcmp(campos[9], "super_trunfo") == 0;
 
-        if (!validarCarta(&carta)) {
+        if (!validarCarta(&carta))
+        {
             erro = "campo obrigatorio, range ou flag";
             goto finalizar;
         }
 
-        for (int i = 0; i < temporario.quantidade; ++i) {
-            if (temporario.cartas[i].id == carta.id) {
+        for (int i = 0; i < temporario.quantidade; ++i)
+        {
+            if (temporario.cartas[i].id == carta.id)
+            {
                 erro = "id duplicado";
                 goto finalizar;
             }
@@ -236,12 +278,14 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
         temporario.cartas[temporario.quantidade++] = carta;
     }
 
-    if (status == -1) {
+    if (status == -1)
+    {
         linhaErro = numeroLinha + 1;
         erro = "linha excede tamanho maximo";
         goto finalizar;
     }
-    if (ferror(arquivo)) {
+    if (ferror(arquivo))
+    {
         linhaErro = numeroLinha + 1;
         erro = "falha de leitura do arquivo";
         goto finalizar;
@@ -249,7 +293,8 @@ int carregarBaralhoCSV(Baralho *baralho, const char *caminho)
 
     if (temporario.quantidade != MAX_CARTAS || quantidadeSuper != 1 ||
         classes[CLASSE_A] != 5 || classes[CLASSE_B] != 6 ||
-        classes[CLASSE_C] != 9 || classes[CLASSE_D] != 14) {
+        classes[CLASSE_C] != 9 || classes[CLASSE_D] != 14)
+    {
         erro = "quantidade total, Super Trunfo ou distribuicao de classes";
         goto finalizar;
     }
@@ -267,30 +312,43 @@ finalizar:
 }
 void embaralharBaralho(Baralho *baralho)
 {
-    if (!baralho || baralho->quantidade<0 || baralho->quantidade>MAX_CARTAS || baralho->quantidade<=1) return;
-    for (int i=baralho->quantidade-1;i>0;i--) {
-        int j=rand()%(i+1); Carta t=baralho->cartas[i];
-        baralho->cartas[i]=baralho->cartas[j]; baralho->cartas[j]=t;
+    if (!baralho || baralho->quantidade < 0 || baralho->quantidade > MAX_CARTAS || baralho->quantidade <= 1)
+        return;
+    for (int i = baralho->quantidade - 1; i > 0; i--)
+    {
+        int j = rand() % (i + 1);
+        Carta t = baralho->cartas[i];
+        baralho->cartas[i] = baralho->cartas[j];
+        baralho->cartas[j] = t;
     }
 }
 int distribuirCartas(Baralho *baralho, Jogador *jogadores, int quantidade_jogadores)
 {
-    if (!baralho || !jogadores || quantidade_jogadores!=MAX_JOGADORES ||
-        baralho->quantidade!=MAX_CARTAS || jogadores[0].quantidade_cartas!=0 ||
-        jogadores[1].quantidade_cartas!=0) return 0;
-    for (int i=0;i<MAX_CARTAS;i++) {
-        if (!validarCarta(&baralho->cartas[i]) || baralho->cartas[i].id<=0) return 0;
-        for (int j=0;j<i;j++) if (baralho->cartas[i].id==baralho->cartas[j].id) return 0;
+    if (!baralho || !jogadores || quantidade_jogadores != MAX_JOGADORES ||
+        baralho->quantidade != MAX_CARTAS || jogadores[0].quantidade_cartas != 0 ||
+        jogadores[1].quantidade_cartas != 0)
+        return 0;
+    for (int i = 0; i < MAX_CARTAS; i++)
+    {
+        if (!validarCarta(&baralho->cartas[i]) || baralho->cartas[i].id <= 0)
+            return 0;
+        for (int j = 0; j < i; j++)
+            if (baralho->cartas[i].id == baralho->cartas[j].id)
+                return 0;
     }
-    Jogador temporarios[MAX_JOGADORES]={jogadores[0],jogadores[1]};
-    for (int i=0;i<MAX_CARTAS;i++)
-        if (!adicionarCarta(&temporarios[i%quantidade_jogadores],baralho->cartas[i])) return 0;
-    if (temporarios[0].quantidade_cartas!=17 || temporarios[1].quantidade_cartas!=17) return 0;
-    jogadores[0]=temporarios[0]; jogadores[1]=temporarios[1];
-    baralho->quantidade=0;
+    Jogador temporarios[MAX_JOGADORES] = {jogadores[0], jogadores[1]};
+    for (int i = 0; i < MAX_CARTAS; i++)
+        if (!adicionarCarta(&temporarios[i % quantidade_jogadores], baralho->cartas[i]))
+            return 0;
+    if (temporarios[0].quantidade_cartas != 17 || temporarios[1].quantidade_cartas != 17)
+        return 0;
+    jogadores[0] = temporarios[0];
+    jogadores[1] = temporarios[1];
+    baralho->quantidade = 0;
     return 1;
 }
 void liberarBaralho(Baralho *baralho)
 {
-    if (baralho) baralho->quantidade=0;
+    if (baralho)
+        baralho->quantidade = 0;
 }

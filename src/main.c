@@ -21,31 +21,46 @@ static void configurarTerminalUTF8(void)
 }
 static const char *nomeAtributo(Atributo a)
 {
-    static const char *nomes[] = {"Raciocinio","Programacao","Matematica","Conhecimento"};
+    static const char *nomes[] = {"Raciocinio", "Programacao", "Matematica", "Conhecimento"};
     return a >= RACIOCINIO && a < QUANTIDADE_ATRIBUTOS ? nomes[a] : "?";
 }
 static Atributo atributoAleatorio(void) { return (Atributo)(rand() % QUANTIDADE_ATRIBUTOS); }
 static int pausarOuSimular(void)
 {
     char linha[32];
-    for (;;) {
+    for (;;)
+    {
         printf("[ENTER] Proxima rodada | [P] Simular ate o fim: ");
-        if (!fgets(linha, sizeof linha, stdin)) return -1;
+        if (!fgets(linha, sizeof linha, stdin))
+            return -1;
         size_t tamanho = strlen(linha);
-        if (tamanho > 0 && linha[tamanho - 1] != '\n' && !feof(stdin)) {
+        if (tamanho > 0 && linha[tamanho - 1] != '\n' && !feof(stdin))
+        {
             int caractere = getchar();
-            if (caractere != '\n' && caractere != EOF) {
-                while (caractere != '\n' && caractere != EOF) caractere = getchar();
+            if (caractere != '\n' && caractere != EOF)
+            {
+                while (caractere != '\n' && caractere != EOF)
+                    caractere = getchar();
                 puts("Entrada muito longa. Tente novamente.");
                 continue;
             }
         }
-        if (tamanho > 0 && linha[tamanho - 1] == '\n') linha[tamanho - 1] = '\0';
-        else if (tamanho > 0 && linha[tamanho - 1] == '\r') linha[tamanho - 1] = '\0';
-        if (linha[0] == 'p' || linha[0] == 'P') {
-            if (linha[1] == '\0') { limparTerminal(); return 1; }
-        } else if (linha[0] == '\0') {
-            limparTerminal(); return 0;
+        if (tamanho > 0 && linha[tamanho - 1] == '\n')
+            linha[tamanho - 1] = '\0';
+        else if (tamanho > 0 && linha[tamanho - 1] == '\r')
+            linha[tamanho - 1] = '\0';
+        if (linha[0] == 'p' || linha[0] == 'P')
+        {
+            if (linha[1] == '\0')
+            {
+                limparTerminal();
+                return 1;
+            }
+        }
+        else if (linha[0] == '\0')
+        {
+            limparTerminal();
+            return 0;
         }
         puts("Opcao invalida.");
     }
@@ -53,16 +68,21 @@ static int pausarOuSimular(void)
 static void mostrarConfronto(Jogo *jogo, Atributo atributo, int desempate)
 {
     printf("\n===== %s | %s =====\n", desempate ? "DESEMPATE" : "RODADA", nomeAtributo(atributo));
-    for (int i=0; i<2; ++i) {
+    for (int i = 0; i < 2; ++i)
+    {
         Carta carta;
         int adiciona;
-        if (!obterCartaConfronto(jogo, i, &carta, &adiciona)) {
-            printf("Jogador %d sem carta disponivel.\n",i+1); continue;
+        if (!obterCartaConfronto(jogo, i, &carta, &adiciona))
+        {
+            printf("Jogador %d sem carta disponivel.\n", i + 1);
+            continue;
         }
         printf("\n%s | cartas na mao: %d\n", jogo->jogadores[i].nome, jogo->jogadores[i].quantidade_cartas);
-        exibirCarta(carta); exibirAtributos(carta);
+        exibirCarta(carta);
+        exibirAtributos(carta);
         printf("Atributo escolhido: %s = %d\n\n", nomeAtributo(atributo), obterPontuacao(carta, atributo));
-        if (i == 0) puts("============================================================");
+        if (i == 0)
+            puts("============================================================");
     }
 }
 static int sortearPrimeiroJogador(Jogo *jogo)
@@ -100,7 +120,8 @@ static int executarCicloDesempate(Jogo *jogo, int jogadorEscolhedor, int simulac
 
     while (verificarFimJogo(jogo) == 0 &&
            verificarJogadorDesempate(jogo, 0) &&
-           verificarJogadorDesempate(jogo, 1)) {
+           verificarJogadorDesempate(jogo, 1))
+    {
         int participantes[2];
         int resultado;
         Atributo atributo;
@@ -114,19 +135,21 @@ static int executarCicloDesempate(Jogo *jogo, int jogadorEscolhedor, int simulac
 
         mostrarConfronto(jogo, atributo, 1);
         resultado = determinarEmpatados(jogo, atributo, participantes);
-        if (resultado < 1) {
+        if (resultado < 1)
+        {
             exibirErro("Desempate invalido.");
             return 0;
         }
 
-        if (!executarDesempate(jogo, atributo)) {
+        if (!executarDesempate(jogo, atributo))
+        {
             exibirErro("Falha no desempate.");
             return 0;
         }
 
         exibirResultadoRodada(resultado == 1
-            ? jogo->jogadores[participantes[0]].nome
-            : NULL);
+                                  ? jogo->jogadores[participantes[0]].nome
+                                  : NULL);
 
         if (resultado == 1)
             break;
@@ -151,16 +174,18 @@ static int processarRodada(Jogo *jogo, int jogadorEscolhedor, int simulacao)
 
     mostrarConfronto(jogo, atributo, 0);
     resultado = determinarEmpatados(jogo, atributo, participantes);
-    if (resultado < 1) {
+    if (resultado < 1)
+    {
         exibirErro("Confronto invalido.");
         return 0;
     }
 
     exibirResultadoRodada(resultado == 1
-        ? jogo->jogadores[participantes[0]].nome
-        : NULL);
+                              ? jogo->jogadores[participantes[0]].nome
+                              : NULL);
 
-    if (!executarRodada(jogo, atributo)) {
+    if (!executarRodada(jogo, atributo))
+    {
         exibirErro("Falha ao processar rodada.");
         return 0;
     }
@@ -181,19 +206,22 @@ static int executarPartida(Jogo *jogo, int simulacao)
 
     /* A primeira rodada e manual; a simulacao so pode ser ativada na pausa. */
     estadoJogo = verificarFimJogo(jogo);
-    if (estadoJogo < 0) {
+    if (estadoJogo < 0)
+    {
         exibirErro("Estado inconsistente.");
         return 0;
     }
 
-    while (estadoJogo == 0) {
+    while (estadoJogo == 0)
+    {
         int controle;
 
         if (!processarRodada(jogo, seletor, simulacao))
             return 0;
 
         estadoJogo = verificarFimJogo(jogo);
-        if (estadoJogo < 0) {
+        if (estadoJogo < 0)
+        {
             exibirErro("Estado inconsistente.");
             return 0;
         }
@@ -215,7 +243,8 @@ static int executarPartida(Jogo *jogo, int simulacao)
         if (controle < 0)
             return 0;
 
-        if (controle == 1) {
+        if (controle == 1)
+        {
             simulacao = 1;
             puts("SIMULACAO AUTOMATICA ATIVADA: ate o fim da partida.");
         }
@@ -224,26 +253,32 @@ static int executarPartida(Jogo *jogo, int simulacao)
     exibirResultadoFinal(
         determinarVencedorJogo(jogo),
         jogo->jogadores,
-        jogo->quantidade_jogadores
-    );
+        jogo->quantidade_jogadores);
     return estadoJogo == 1;
 }
 int main(void)
 {
     configurarTerminalUTF8();
     inicializarAleatorio();
-    for (;;) {
+    for (;;)
+    {
         exibirMenu();
-        int opcao=lerInteiro(0,2);
-        if (opcao < 0 || opcao==0) break;
-        if (opcao==2) { exibirRegras(); continue; }
+        int opcao = lerInteiro(0, 2);
+        if (opcao < 0 || opcao == 0)
+            break;
+        if (opcao == 2)
+        {
+            exibirRegras();
+            continue;
+        }
         Jogo jogo;
-        if (!inicializarJogo(&jogo,solicitarQuantidadeJogadores())) {
+        if (!inicializarJogo(&jogo, solicitarQuantidadeJogadores()))
+        {
             exibirErro("Nao foi possivel carregar ou distribuir o baralho.");
             continue;
         }
-        solicitarNomesJogadores(jogo.jogadores,MAX_JOGADORES);
-        executarPartida(&jogo,0);
+        solicitarNomesJogadores(jogo.jogadores, MAX_JOGADORES);
+        executarPartida(&jogo, 0);
         finalizarJogo(&jogo);
     }
     puts("Obrigado por jogar SuperTrunfIA!");

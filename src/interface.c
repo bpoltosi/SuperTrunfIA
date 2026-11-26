@@ -37,17 +37,22 @@ int solicitarQuantidadeJogadores(void)
 
 void solicitarNomesJogadores(Jogador *jogadores, int quantidade)
 {
-    if (!jogadores || quantidade < 1 || quantidade > MAX_JOGADORES) return;
-    for (int i = 0; i < quantidade; ++i) {
+    if (!jogadores || quantidade < 1 || quantidade > MAX_JOGADORES)
+        return;
+    for (int i = 0; i < quantidade; ++i)
+    {
         printf("Nome do Jogador %d: ", i + 1);
         int leitura;
-        do {
+        do
+        {
             leitura = lerString(jogadores[i].nome, (int)sizeof jogadores[i].nome);
-            if (leitura < 0) puts("Nome muito longo (maximo 49 caracteres). Tente novamente.");
+            if (leitura < 0)
+                puts("Nome muito longo (maximo 49 caracteres). Tente novamente.");
         } while (leitura < 0);
         if (!jogadores[i].nome[0])
             snprintf(jogadores[i].nome, sizeof jogadores[i].nome, "Jogador %d", i + 1);
-        if (leitura == 0) return;
+        if (leitura == 0)
+            return;
     }
 }
 
@@ -82,7 +87,8 @@ void exibirResultadoRodada(const char *nome_vencedor)
 
 void exibirResultadoFinal(const Jogador *vencedor, const Jogador jogadores[], int quantidade)
 {
-    if (!jogadores || quantidade != MAX_JOGADORES) return;
+    if (!jogadores || quantidade != MAX_JOGADORES)
+        return;
 
     puts("\n");
     exibirSeparador();
@@ -100,5 +106,6 @@ void exibirResultadoFinal(const Jogador *vencedor, const Jogador jogadores[], in
 
 void exibirErro(const char *mensagem)
 {
-    if (mensagem) fprintf(stderr, "Erro: %s\n", mensagem);
+    if (mensagem)
+        fprintf(stderr, "Erro: %s\n", mensagem);
 }

@@ -4,19 +4,27 @@
 
 int obterPontuacao(Carta carta, Atributo atributo)
 {
-    switch (atributo) {
-        case RACIOCINIO: return carta.raciocinio;
-        case PROGRAMACAO: return carta.programacao;
-        case MATEMATICA: return carta.matematica;
-        case CONHECIMENTO: return carta.conhecimento;
-        default: return -1;
+    switch (atributo)
+    {
+    case RACIOCINIO:
+        return carta.raciocinio;
+    case PROGRAMACAO:
+        return carta.programacao;
+    case MATEMATICA:
+        return carta.matematica;
+    case CONHECIMENTO:
+        return carta.conhecimento;
+    default:
+        return -1;
     }
 }
 
 static int compararPontuacoes(int pontos1, int pontos2)
 {
-    if (pontos1 > pontos2) return 1;
-    if (pontos1 < pontos2) return -1;
+    if (pontos1 > pontos2)
+        return 1;
+    if (pontos1 < pontos2)
+        return -1;
     return 0;
 }
 
@@ -70,7 +78,9 @@ int compararCartasComSuperTrunfo(Carta carta1, Carta carta2, Atributo atributo)
 ClasseCarta obterClasseCarta(const Carta *carta)
 {
     return carta == NULL || carta->classe < CLASSE_A ||
-           carta->classe > CLASSE_D ? CLASSE_INVALIDA : carta->classe;
+                   carta->classe > CLASSE_D
+               ? CLASSE_INVALIDA
+               : carta->classe;
 }
 
 int validarCarta(const Carta *carta)
