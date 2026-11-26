@@ -19,7 +19,6 @@ static void configurarTerminalUTF8(void)
     (void)setlocale(LC_ALL, "");
 #endif
 }
-
 static const char *nomeAtributo(Atributo a)
 {
     static const char *nomes[] = {"Raciocinio","Programacao","Matematica","Conhecimento"};
@@ -95,7 +94,6 @@ static int sortearPrimeiroJogador(Jogo *jogo)
            jogo->jogadores[jogadorEscolhedor].nome);
     return jogadorEscolhedor;
 }
-
 static int executarCicloDesempate(Jogo *jogo, int jogadorEscolhedor, int simulacao)
 {
     int numeroDesempate = 1;
@@ -138,7 +136,6 @@ static int executarCicloDesempate(Jogo *jogo, int jogadorEscolhedor, int simulac
 
     return 1;
 }
-
 static int processarRodada(Jogo *jogo, int jogadorEscolhedor, int simulacao)
 {
     Atributo atributo;
@@ -174,7 +171,6 @@ static int processarRodada(Jogo *jogo, int jogadorEscolhedor, int simulacao)
 
     return 1;
 }
-
 static int executarPartida(Jogo *jogo, int simulacao)
 {
     int seletor = sortearPrimeiroJogador(jogo);
@@ -204,7 +200,8 @@ static int executarPartida(Jogo *jogo, int simulacao)
         if (estadoJogo == 1)
             break;
 
-        printf("\nContagem de Cartas: %s=%d | %s=%d\n\n",
+        printf("\nRodada atual: %d\n", jogo->rodada_atual);
+        printf("Contagem de Cartas: %s=%d | %s=%d\n\n",
                jogo->jogadores[0].nome,
                jogo->jogadores[0].quantidade_cartas,
                jogo->jogadores[1].nome,
@@ -242,7 +239,8 @@ int main(void)
         if (opcao==2) { exibirRegras(); continue; }
         Jogo jogo;
         if (!inicializarJogo(&jogo,solicitarQuantidadeJogadores())) {
-            exibirErro("Nao foi possivel carregar ou distribuir o baralho."); continue;
+            exibirErro("Nao foi possivel carregar ou distribuir o baralho.");
+            continue;
         }
         solicitarNomesJogadores(jogo.jogadores,MAX_JOGADORES);
         executarPartida(&jogo,0);
