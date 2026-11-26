@@ -75,7 +75,7 @@ void exibirResultadoRodada(const char *nome_vencedor)
 {
     exibirSeparador();
     if (nome_vencedor && nome_vencedor[0])
-        printf("%s venceu a disputa!\n", nome_vencedor);
+        printf("\n%s venceu a disputa!\n", nome_vencedor);
     else
         puts("Empate! Inicia desempate.");
 }

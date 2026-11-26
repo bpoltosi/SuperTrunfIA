@@ -62,7 +62,7 @@ static void mostrarConfronto(Jogo *jogo, Atributo atributo, int desempate)
         }
         printf("\n%s | cartas na mao: %d\n", jogo->jogadores[i].nome, jogo->jogadores[i].quantidade_cartas);
         exibirCarta(carta); exibirAtributos(carta);
-        printf("Atributo escolhido: %s = %d\n", nomeAtributo(atributo), obterPontuacao(carta, atributo));
+        printf("Atributo escolhido: %s = %d\n\n", nomeAtributo(atributo), obterPontuacao(carta, atributo));
         if (i == 0) puts("============================================================");
     }
 }
@@ -204,7 +204,7 @@ static int executarPartida(Jogo *jogo, int simulacao)
         if (estadoJogo == 1)
             break;
 
-        printf("\nContagem: %s=%d | %s=%d\n",
+        printf("\nContagem de Cartas: %s=%d | %s=%d\n\n",
                jogo->jogadores[0].nome,
                jogo->jogadores[0].quantidade_cartas,
                jogo->jogadores[1].nome,
